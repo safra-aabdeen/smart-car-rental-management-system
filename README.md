@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Smart Car Rental Management System
 
 A web-based car rental management system developed using React, Firebase, and Tailwind CSS.
@@ -6,11 +7,11 @@ A web-based car rental management system developed using React, Firebase, and Ta
 
 * User registration and login
 * Browse and view available cars
-* Car booking management
-* Online payment integration
-* Driver management
+* Car booking  management 
+* Online payment intergration
+* Driver management 
 * Admin dashboard
-* Booking status management
+* Booking status management 
 * Customer reviews and ratings
 * Contact messages
 * Email notifications
@@ -47,3 +48,7 @@ The backend has its own dependencies and setup. Refer to the backend configurati
 ## Project Purpose
 
 This project helps users browse cars, make rental bookings, and manage rental activities through a web application.
+=======
+# smart-car-rental-management-system 
+A web-based car rental management system developed using React, Firebase and Tailwind CSS.
+>>>>>>> origin/main
