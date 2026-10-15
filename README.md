@@ -1,54 +1,64 @@
-<<<<<<< HEAD
 # Smart Car Rental Management System
 
-A web-based car rental management system developed using React, Firebase, and Tailwind CSS.
+A web-based car rental management system developed using React, Vite, Firebase, Tailwind CSS, Express, and Stripe.
 
 ## Features
 
-* User registration and login
-* Browse and view available cars
-* Car booking  management 
-* Online payment intergration
-* Driver management 
-* Admin dashboard
-* Booking status management 
-* Customer reviews and ratings
-* Contact messages
-* Email notifications
+* User registration and login (Firebase Auth)
+* Browse and view available cars with pricing and filters
+* Car booking and reservation management
+* Online payment integration (Stripe Sandbox / Test Mode + Wallet support)
+* Automatic refund management via Stripe API
+* Driver assignment & management
+* User dashboard with booking history & wallet balance
+* Admin dashboard for car, driver, and booking management
+* Invoicing & email notifications
 
 ## Technologies Used
 
-* React
-* Vite
+* React 19 & Vite
 * Tailwind CSS
-* Firebase Authentication
-* Cloud Firestore
-* PayHere
-* EmailJS
-* Node.js backend
+* Firebase Authentication & Cloud Firestore
+* Stripe (Test Mode / Sandbox)
+* EmailJS & Nodemailer
+* Express.js Node Backend
 
-## Getting Started
+## Setup & Running the Project
 
-### 1. Install frontend dependencies
-
+### 1. Frontend Setup
+Install frontend dependencies:
 ```bash
 npm install
 ```
 
-### 2. Start the frontend
+Configure your frontend `.env` file (copied from `.env.template`):
+```env
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+VITE_BACKEND_URL=http://localhost:5000
+```
 
+Start the Vite development server:
 ```bash
 npm run dev
 ```
 
-### Backend
+### 2. Backend Setup
+Navigate into the backend folder:
+```bash
+cd backend
+npm install
+```
 
-The backend has its own dependencies and setup. Refer to the backend configuration before running the server.
+Configure your backend `.env` file (copied from `backend/.env.template`):
+```env
+PORT=5000
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_CURRENCY=lkr
+FIREBASE_SERVICE_ACCOUNT=./serviceAccountKey.json
+```
 
-## Project Purpose
-
-This project helps users browse cars, make rental bookings, and manage rental activities through a web application.
-=======
-# smart-car-rental-management-system 
-A web-based car rental management system developed using React, Firebase and Tailwind CSS.
->>>>>>> origin/main
+Start the backend server:
+```bash
+node server.js
+```

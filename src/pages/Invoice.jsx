@@ -179,7 +179,9 @@ const Invoice = () => {
                   <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
                     <FaCheckCircle /> Paid
                   </span>
-                  <p className="text-gray-500 mt-2">Via PayHere</p>
+                  <p className="text-gray-500 mt-2">
+                    Via {invoiceData.paymentMethod || "Stripe"}
+                  </p>
                 </div>
               </div>
 

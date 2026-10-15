@@ -16,6 +16,7 @@
     "express": "^5.2.1",
     "firebase-admin": "^14.2.0",
     "md5": "^2.3.0",
-    "nodemailer": "^9.0.3"
+    "nodemailer": "^9.0.3",
+    "stripe": "^23.0.0"
   }
 }
