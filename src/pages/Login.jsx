@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import heroImage from "../images/home-image.jpg";
+import heroImage from "../images/Home-image.jpg";
 
 const Login = () => {
   const [email, setEmail] = useState("");

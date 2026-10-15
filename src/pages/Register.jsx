@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
-import heroImage from "../images/home-image.jpg";
+import heroImage from "../images/Home-image.jpg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
