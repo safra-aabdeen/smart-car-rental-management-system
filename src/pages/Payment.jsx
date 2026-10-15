@@ -37,13 +37,13 @@ import {
 
 import { db, auth } from "../firebase/firebase";
 import { sendBookingEmail } from "../services/email";
+import getBackendUrl from "../utils/backendUrl";
 
 // Stripe Sandbox Publishable Key
 const RAW_STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
 const STRIPE_PUBLISHABLE_KEY = RAW_STRIPE_KEY.trim();
 
-const BACKEND_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = getBackendUrl();
 
 // Check if publishable key is valid (not empty and not the placeholder)
 const isKeyConfigured =

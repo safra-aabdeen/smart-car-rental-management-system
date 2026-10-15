@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { db, auth } from "../firebase/firebase";
+import getBackendUrl from "../utils/backendUrl";
 import {
   FaCar,
   FaHome,
@@ -239,7 +240,7 @@ const UserDashboard = () => {
 
     try {
       // Use the backend refund API
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const backendUrl = getBackendUrl();
       
       alert("Processing refund... Please wait.");
       

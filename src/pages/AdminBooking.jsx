@@ -5,6 +5,7 @@ import { db, auth } from "../firebase/firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { sendBookingEmail } from "../services/email";
+import getBackendUrl from "../utils/backendUrl";
 import {
   FaCheckCircle, FaTrashAlt, FaTimesCircle, FaCar, FaCalendarAlt,
   FaUsers, FaChartBar, FaTachometerAlt, FaSignOutAlt, FaMoneyCheckAlt, FaIdBadge
@@ -141,7 +142,7 @@ const AdminBookings = () => {
 
     if (booking.paymentStatus === 'Paid' || booking.status === 'confirmed') {
       try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        const backendUrl = getBackendUrl();
         alert("Processing refund via backend... Please wait.");
         
         const response = await fetch(`${backendUrl}/api/refund`, {

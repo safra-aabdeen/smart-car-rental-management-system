@@ -17,15 +17,36 @@ app.use(cors());
 
 let db;
 try {
-  const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT || './serviceAccountKey.json');
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-  db = admin.firestore();
-  console.log("Firebase Admin initialized successfully.");
+  let serviceAccount = null;
+
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    const rawAccount = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
+    if (rawAccount.startsWith('{')) {
+      serviceAccount = JSON.parse(rawAccount);
+    } else {
+      serviceAccount = require(rawAccount);
+    }
+  } else {
+    try {
+      serviceAccount = require('./serviceAccountKey.json');
+    } catch {
+      // not found locally
+    }
+  }
+
+  if (serviceAccount) {
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    }
+    db = admin.firestore();
+    console.log("Firebase Admin initialized successfully.");
+  } else {
+    console.warn("Firebase Admin: serviceAccountKey.json not provided yet. Local/simulated operations will run.");
+  }
 } catch (error) {
-  console.error("Failed to initialize Firebase Admin:", error.message);
-  console.log("CRITICAL: Please place your serviceAccountKey.json in the backend folder.");
+  console.error("Firebase Admin initialization error:", error.message);
 }
 
 /**
@@ -433,6 +454,10 @@ async function handleWalletOnlyRefund(bookingId, bookingData, paymentRefToUpdate
 }
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Backend server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
