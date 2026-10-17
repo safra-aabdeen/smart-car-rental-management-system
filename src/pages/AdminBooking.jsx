@@ -6,6 +6,7 @@ import { signOut } from "firebase/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { sendBookingEmail } from "../services/email";
 import getBackendUrl from "../utils/backendUrl";
+import getCarImage from "../utils/carImage";
 import {
   FaCheckCircle, FaTrashAlt, FaTimesCircle, FaCar, FaCalendarAlt,
   FaUsers, FaChartBar, FaTachometerAlt, FaSignOutAlt, FaMoneyCheckAlt, FaIdBadge
@@ -303,8 +304,16 @@ const AdminBookings = () => {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          {booking.carImage ? (
-                            <img src={booking.carImage} alt={booking.carName} className="w-12 h-12 object-cover rounded-lg shadow-sm shrink-0" />
+                          {booking.carImage || booking.carName ? (
+                            <img
+                              src={getCarImage(booking.carImage || booking.carName)}
+                              alt={booking.carName}
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "/images/Home-image.jpg";
+                              }}
+                              className="w-12 h-12 object-cover rounded-lg shadow-sm shrink-0"
+                            />
                           ) : (
                             <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 shrink-0">
                               <FaCar />

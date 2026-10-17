@@ -8,6 +8,7 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../firebase/firebase";
 import localCars from "../data/Cars";
+import getCarImage from "../utils/carImage";
 
 const Cars = () => {
   const navigate = useNavigate();
@@ -266,7 +267,15 @@ const filteredCars = allCars.filter((car) => {
             <div className="grid md:grid-cols-3 gap-8">
               {filteredCars.map((car) => (
                 <div key={car.id} className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-300 transition duration-300 hover:-translate-y-2">
-                  <img src={car.image} alt={car.name} className="h-56 w-full object-cover" />
+                  <img
+                    src={getCarImage(car)}
+                    alt={car.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/images/Home-image.jpg";
+                    }}
+                    className="h-56 w-full object-cover"
+                  />
                   <div className="p-5">
                     <div className="flex justify-between items-center">
                       <h2 className="text-2xl font-bold text-gray-900">{car.name}</h2>

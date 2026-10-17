@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 
 import localCars from "../data/Cars";
+import getCarImage from "../utils/carImage";
 
 const DRIVER_CHARGE_PER_DAY = 1750;
 
@@ -148,7 +149,7 @@ const Booking = () => {
         userName: userName || user.displayName || "Unknown User",
         carId: car.id,
         carName: car.name,
-        carImage: car.image,
+        carImage: getCarImage(car),
         pricePerDay: car.price,
         driverChargePerDay: booking.needDriver? DRIVER_CHARGE_PER_DAY : 0,
         totalPrice: calculateTotal(),
@@ -179,7 +180,7 @@ const Booking = () => {
           bookingId: newBooking.id,
           carId: car.id,
           carName: car.name,
-          carImage: car.image,
+          carImage: getCarImage(car),
           pickupDate: booking.pickupDate,
           returnDate: booking.returnDate,
           pickupLocation: booking.location,
@@ -343,7 +344,11 @@ const Booking = () => {
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Booking Summary</h2>
 
             <img
-              src={car.image}
+              src={getCarImage(car)}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/images/Home-image.jpg";
+              }}
               className="w-full h-48 object-cover rounded-xl mb-4"
               alt={car.name}
             />

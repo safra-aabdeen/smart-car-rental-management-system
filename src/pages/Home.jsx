@@ -5,6 +5,7 @@ import { db } from "../firebase/firebase";
 import { FaCar, FaHome, FaPhone, FaInfoCircle, FaSearch, FaStar } from "react-icons/fa";
 import homeImg from "../images/Home-image.jpg";
 import localCars from "../data/Cars";
+import getCarImage from "../utils/carImage";
 
 const Home = () => {
   const [popupImg, setPopupImg] = useState(null);
@@ -145,14 +146,20 @@ const Home = () => {
           <p className="text-center text-gray-500">Loading cars...</p>
         ) : (
           <div className="grid md:grid-cols-3 gap-10">
-            {featuredCars.map((car) => (
-              <div key={car.id} className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition">
-                <img
-                  src={car.image}
-                  alt={car.name}
-                  onClick={() => setPopupImg(car.image)}
-                  className="h-60 w-full object-cover cursor-pointer transition-transform duration-300 hover:scale-110"
-                />
+            {featuredCars.map((car) => {
+              const carImg = getCarImage(car);
+              return (
+                <div key={car.id} className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition">
+                  <img
+                    src={carImg}
+                    alt={car.name}
+                    onClick={() => setPopupImg(carImg)}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/images/Home-image.jpg";
+                    }}
+                    className="h-60 w-full object-cover cursor-pointer transition-transform duration-300 hover:scale-110"
+                  />
 
                 <div className="p-5">
                   <div className="flex justify-between items-center">
@@ -171,7 +178,8 @@ const Home = () => {
                   </Link>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         )}
       </section>

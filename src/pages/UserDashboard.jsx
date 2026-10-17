@@ -16,6 +16,7 @@ import {
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { db, auth } from "../firebase/firebase";
 import getBackendUrl from "../utils/backendUrl";
+import getCarImage from "../utils/carImage";
 import {
   FaCar,
   FaHome,
@@ -556,10 +557,14 @@ const UserDashboard = () => {
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-5">
                     {/* Car Image */}
                     <div className="w-full md:w-36 h-24 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
-                      {booking.carImage ? (
+                      {booking.carImage || booking.carName ? (
                         <img
-                          src={booking.carImage}
+                          src={getCarImage(booking.carImage || booking.carName)}
                           alt={booking.carName}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/images/Home-image.jpg";
+                          }}
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -833,10 +838,14 @@ const UserDashboard = () => {
                 >
                   {/* Car Image */}
                   <div className="w-full md:w-36 h-24 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
-                    {review.carImage ? (
+                    {review.carImage || review.carName ? (
                       <img
-                        src={review.carImage}
+                        src={getCarImage(review.carImage || review.carName)}
                         alt={review.carName}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/images/Home-image.jpg";
+                        }}
                         className="w-full h-full object-cover"
                       />
                     ) : (

@@ -5,8 +5,8 @@ import { db, auth } from "../firebase/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { FaCar, FaHome, FaPhone, FaInfoCircle, FaStar, FaStarHalfAlt, FaRegStar, FaUsers, FaGasPump, FaArrowLeft, FaSignOutAlt, FaUserCircle, FaCommentDots } from "react-icons/fa";
 
-// Local fallback data
 import localCars from "../data/Cars";
+import getCarImage from "../utils/carImage";
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -176,8 +176,12 @@ const CarDetails = () => {
           {/* IMAGE SECTION */}
           <div className="rounded-xl overflow-hidden">
             <img
-              src={car.image}
+              src={getCarImage(car)}
               alt={car.name}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/images/Home-image.jpg";
+              }}
               className="w-full h-full object-cover"
             />
           </div>

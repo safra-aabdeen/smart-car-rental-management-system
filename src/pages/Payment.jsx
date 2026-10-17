@@ -60,16 +60,25 @@ const CARD_ELEMENT_OPTIONS = {
   style: {
     base: {
       color: "#111827",
+      backgroundColor: "#ffffff",
       fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       fontSmoothing: "antialiased",
       fontSize: "16px",
       "::placeholder": {
         color: "#9ca3af",
       },
+      ":-webkit-autofill": {
+        color: "#111827",
+        backgroundColor: "#ffffff",
+      },
     },
     invalid: {
       color: "#ef4444",
       iconColor: "#ef4444",
+      ":-webkit-autofill": {
+        color: "#ef4444",
+        backgroundColor: "#ffffff",
+      },
     },
   },
   hidePostalCode: false,
@@ -138,6 +147,7 @@ const PaymentForm = ({
   const [useWallet, setUseWallet] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [copiedTestCard, setCopiedTestCard] = useState(false);
 
   const [paymentData, setPaymentData] = useState({
     firstName: "",
@@ -376,7 +386,18 @@ const PaymentForm = ({
 
         if (stripeError) {
           console.error("Stripe Card Error:", stripeError);
-          setErrorMessage(stripeError.message || "Card payment failed. Please check details.");
+          const rawMsg = stripeError.message || "";
+          if (
+            rawMsg.toLowerCase().includes("non test card") ||
+            rawMsg.toLowerCase().includes("test mode") ||
+            stripeError.code === "card_declined"
+          ) {
+            setErrorMessage(
+              "Stripe Test Mode requires a valid test card. Please use test card 4242 4242 4242 4242 (Exp: 12/28, CVC: 123) instead of your personal bank card."
+            );
+          } else {
+            setErrorMessage(rawMsg || "Card payment failed. Please check details.");
+          }
           setLoading(false);
           return;
         }
@@ -411,12 +432,27 @@ const PaymentForm = ({
 
         {/* ERROR BANNER */}
         {errorMessage && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl flex items-start gap-3">
-            <FaExclamationTriangle className="text-xl mt-0.5 shrink-0 text-red-500" />
-            <div className="text-sm">
-              <p className="font-semibold">Payment Notice</p>
-              <p>{errorMessage}</p>
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl flex flex-col sm:flex-row items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <FaExclamationTriangle className="text-xl mt-0.5 shrink-0 text-red-500" />
+              <div className="text-sm">
+                <p className="font-semibold">Payment Notice</p>
+                <p>{errorMessage}</p>
+              </div>
             </div>
+            {errorMessage.includes("4242") && (
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText("4242424242424242");
+                  setCopiedTestCard(true);
+                  setTimeout(() => setCopiedTestCard(false), 2500);
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg shrink-0 font-medium transition cursor-pointer"
+              >
+                {copiedTestCard ? "Copied!" : "Copy Test Card"}
+              </button>
+            )}
           </div>
         )}
 
@@ -437,7 +473,7 @@ const PaymentForm = ({
           </div>
         )}
 
-        <form onSubmit={handlePayment} className="space-y-6">
+        <form onSubmit={handlePayment} autoComplete="off" className="space-y-6">
           {/* PERSONAL DETAILS GRID */}
           <div className="grid md:grid-cols-2 gap-5">
             <div>
@@ -604,9 +640,12 @@ const PaymentForm = ({
                 </span>
               </label>
 
-              <div className="p-4 bg-white border border-gray-300 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 transition min-h-[50px] flex items-center">
+              <div 
+                className="p-4 bg-white border border-gray-300 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 transition min-h-[50px] flex items-center"
+                style={{ colorScheme: "light", backgroundColor: "#ffffff" }}
+              >
                 {isKeyConfigured && stripe ? (
-                  <div className="w-full">
+                  <div className="w-full bg-white" style={{ colorScheme: "light", backgroundColor: "#ffffff" }}>
                     <CardElement options={CARD_ELEMENT_OPTIONS} />
                   </div>
                 ) : (
@@ -647,11 +686,30 @@ const PaymentForm = ({
               </div>
 
               {/* TEST CARD HELPER */}
-              <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-3 text-xs text-indigo-800 flex items-center gap-2">
-                <FaInfoCircle className="text-indigo-600 shrink-0 text-sm" />
-                <span>
-                  <strong>Stripe Sandbox Test Card:</strong> <code>4242 • 4242 • 4242 • 4242</code>, Exp: <code>12/28</code>, CVC: <code>123</code>.
-                </span>
+              <div className="bg-indigo-50/80 border border-indigo-200 rounded-xl p-3 text-xs text-indigo-900 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <FaInfoCircle className="text-indigo-600 shrink-0 text-sm" />
+                  <span>
+                    <strong>Stripe Sandbox Test Card:</strong> <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-indigo-200 text-indigo-700 font-bold">4242 • 4242 • 4242 • 4242</code>, Exp: <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-indigo-200 text-indigo-700">12/28</code>, CVC: <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-indigo-200 text-indigo-700">123</code>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText("4242424242424242");
+                    setCopiedTestCard(true);
+                    setTimeout(() => setCopiedTestCard(false), 2500);
+                  }}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-3 py-1 rounded-lg text-xs transition shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm"
+                >
+                  {copiedTestCard ? (
+                    <>
+                      <FaCheckCircle className="text-xs" /> Copied! Paste (Ctrl+V)
+                    </>
+                  ) : (
+                    "Copy Test Card"
+                  )}
+                </button>
               </div>
             </div>
           ) : (

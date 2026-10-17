@@ -23,6 +23,7 @@ import { signOut } from "firebase/auth";
 import { db, auth } from "../firebase/firebase";
 
 import { useNavigate, useLocation } from "react-router-dom";
+import getCarImage from "../utils/carImage";
 
 const AdminDashboard = () => {
 
@@ -369,8 +370,12 @@ setCarBookingCounts(carCounts);
                   <div className="flex items-center gap-4">
 
                     <img
-                      src={car.image}
+                      src={getCarImage(car)}
                       alt={car.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/images/Home-image.jpg";
+                      }}
                       className="w-20 h-20 rounded-xl object-cover"
                     />
 

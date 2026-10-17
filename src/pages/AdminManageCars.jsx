@@ -30,6 +30,7 @@ import {
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
+import getCarImage from "../utils/carImage";
 
 const AdminManageCars = () => {
   const [cars, setCars] = useState([]);
@@ -195,8 +196,12 @@ const AdminManageCars = () => {
                   <tr key={car.id} className="border-b border-gray-200 hover:bg-gray-50">
                     <td className="p-4">
                       <img 
-                        src={car.image} 
+                        src={getCarImage(car)} 
                         alt={car.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/images/Home-image.jpg";
+                        }}
                         className="w-16 h-12 object-cover rounded-lg"
                       />
                     </td>
