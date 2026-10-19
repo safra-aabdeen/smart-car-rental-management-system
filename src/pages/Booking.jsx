@@ -17,6 +17,8 @@ import {
 
 import localCars from "../data/Cars";
 import getCarImage from "../utils/carImage";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const DRIVER_CHARGE_PER_DAY = 1750;
 
@@ -217,179 +219,151 @@ const Booking = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen flex-col">
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
 
       {/* NAVBAR */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <FaCar className="text-indigo-600 text-2xl" />
-          <h1 className="text-2xl font-bold text-gray-900">CarRental</h1>
-        </div>
-
-        <ul className="hidden md:flex gap-8 text-gray-600 font-medium">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaHome /> Home
-          </Link>
-          <Link to="/cars" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaCar /> Cars
-          </Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaInfoCircle /> About
-          </Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaPhone /> Contact
-          </Link>
-        </ul>
-
-        <div className="flex items-center gap-5">
-          {user && (
-            <>
-              <p className="text-gray-900 font-semibold text-lg flex items-center gap-2">
-                <FaUser className="text-indigo-600" /> {userName}
-              </p>
-              <button
-                onClick={handleLogout}
-                className="bg-gray-700 hover:bg-red-600 text-white px-5 py-2 rounded-lg flex items-center gap-2 transition"
-              >
-                <FaSignOutAlt />Logout
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* CONTENT */}
-      <div className="max-w-6xl mx-auto px-6 py-12 flex-1">
-        <h1 className="text-4xl font-bold mb-8 text-gray-900">Book Your Car</h1>
+      <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 md:px-10 py-6 sm:py-10 flex-1">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900 tracking-tight">Book Your Car</h1>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
 
           {/* FORM */}
-          <div className="md:col-span-2 bg-white shadow-lg p-8 rounded-2xl">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">Booking Details</h2>
+          <div className="lg:col-span-2 bg-white shadow-sm border border-gray-200 p-5 sm:p-8 rounded-2xl">
+            <h2 className="text-lg sm:text-xl font-bold mb-5 text-gray-900">Booking Details</h2>
 
-            <form onSubmit={handleBooking} className="space-y-5">
+            <form onSubmit={handleBooking} className="space-y-4 sm:space-y-5">
 
               {/* Pickup Date */}
               <div>
-                <label className="flex items-center gap-2 text-gray-600 font-medium mb-2">
-                  <FaCalendar className="text-gray-400" /> Pickup Date
+                <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-semibold mb-1.5">
+                  <FaCalendar className="text-gray-400 text-xs" /> Pickup Date
                 </label>
                 <input
                   type="date"
                   value={booking.pickupDate}
                   onChange={(e) => setBooking({...booking, pickupDate: e.target.value })}
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />
               </div>
 
               {/* Return Date */}
               <div>
-                <label className="flex items-center gap-2 text-gray-600 font-medium mb-2">
-                  <FaCalendar className="text-gray-400" /> Return Date
+                <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-semibold mb-1.5">
+                  <FaCalendar className="text-gray-400 text-xs" /> Return Date
                 </label>
                 <input
                   type="date"
                   value={booking.returnDate}
                   min={booking.pickupDate || new Date().toISOString().split("T")[0]}
                   onChange={(e) => setBooking({...booking, returnDate: e.target.value })}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />
               </div>
 
               {/* Need Driver Option */}
-              <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-center gap-3 p-3.5 border border-gray-200 rounded-xl bg-gray-50/70">
                 <input
                   type="checkbox"
                   id="needDriver"
                   checked={booking.needDriver}
                   onChange={(e) => setBooking({...booking, needDriver: e.target.checked })}
-                  className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                  className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 cursor-pointer"
                 />
-                <label htmlFor="needDriver" className="flex items-center gap-2 text-gray-600 font-medium cursor-pointer">
-                  <FaUserTie className="text-gray-500" />
-                  Need Driver (Rs.{DRIVER_CHARGE_PER_DAY}/day)
+                <label htmlFor="needDriver" className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-medium cursor-pointer">
+                  <FaUserTie className="text-gray-500 text-xs" />
+                  Need Driver (Rs.{DRIVER_CHARGE_PER_DAY.toLocaleString()}/day)
                 </label>
               </div>
 
               {/* Pickup Location */}
               <div>
-                <label className="flex items-center gap-2 text-gray-600 font-medium mb-2">
-                  <FaMapMarkerAlt className="text-gray-400" /> Pickup Location
+                <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-semibold mb-1.5">
+                  <FaMapMarkerAlt className="text-gray-400 text-xs" /> Pickup Location
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter location"
+                  placeholder="e.g. Colombo Airport, Kandy City"
                   value={booking.location}
                   onChange={(e) => setBooking({...booking, location: e.target.value })}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition shadow-sm"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 sm:py-3.5 rounded-xl font-semibold text-sm sm:text-base transition shadow-sm cursor-pointer mt-2"
               >
-                Confirm Booking
+                Proceed to Payment
               </button>
             </form>
           </div>
 
           {/* SUMMARY */}
-          <div className="bg-white shadow-lg p-6 rounded-2xl h-fit">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Booking Summary</h2>
+          <div className="bg-white shadow-sm border border-gray-200 p-5 rounded-2xl h-fit lg:sticky lg:top-24">
+            <h2 className="text-lg font-bold mb-3 text-gray-900">Booking Summary</h2>
 
-            <img
-              src={getCarImage(car)}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/images/Home-image.jpg";
-              }}
-              className="w-full h-48 object-cover rounded-xl mb-4"
-              alt={car.name}
-            />
+            <div className="h-40 w-full overflow-hidden rounded-xl bg-gray-100 mb-4">
+              <img
+                src={getCarImage(car)}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/images/Home-image.jpg";
+                }}
+                className="w-full h-full object-cover"
+                alt={car.name}
+              />
+            </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5 text-sm">
               <div>
-                <p className="text-gray-400 text-sm">Car</p>
-                <p className="font-bold text-lg text-gray-900">{car.name}</p>
+                <p className="text-gray-400 text-xs">Selected Car</p>
+                <p className="font-bold text-gray-900">{car.name}</p>
               </div>
 
               <div>
-                <p className="text-gray-400 text-sm">Price per day</p>
-                <p className="font-bold text-xl text-indigo-600">Rs.{car.price}</p>
+                <p className="text-gray-400 text-xs">Rate per day</p>
+                <p className="font-bold text-indigo-600">Rs.{car.price?.toLocaleString()}</p>
               </div>
 
               {booking.needDriver && (
                 <div>
-                  <p className="text-gray-400 text-sm">Driver Charge</p>
-                  <p className="font-bold text-lg text-gray-900">Rs.{DRIVER_CHARGE_PER_DAY}/day</p>
+                  <p className="text-gray-400 text-xs">Driver Charge</p>
+                  <p className="font-bold text-gray-800">Rs.{DRIVER_CHARGE_PER_DAY.toLocaleString()}/day</p>
                 </div>
               )}
 
               {calculateDays() > 0 && (
-                <>
-                  <div className="border-t border-gray-300 pt-3">
-                    <p className="text-gray-400 text-sm">Total Days</p>
-                    <p className="font-bold text-gray-900">{calculateDays()} days</p>
+                <div className="border-t border-gray-200 pt-3 space-y-2">
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>Total Duration:</span>
+                    <span className="font-semibold text-gray-900">{calculateDays()} day{calculateDays() > 1 ? "s" : ""}</span>
                   </div>
 
                   {booking.needDriver && (
-                    <div className="text-sm text-gray-500">
-                      <p>Car: Rs.{car.price * calculateDays()}</p>
-                      <p>Driver: Rs.{DRIVER_CHARGE_PER_DAY * calculateDays()}</p>
+                    <div className="text-xs text-gray-500 space-y-0.5">
+                      <div className="flex justify-between">
+                        <span>Car Subtotal:</span>
+                        <span>Rs.{(car.price * calculateDays()).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Driver Subtotal:</span>
+                        <span>Rs.{(DRIVER_CHARGE_PER_DAY * calculateDays()).toLocaleString()}</span>
+                      </div>
                     </div>
                   )}
 
-                  <div className="border-t border-gray-300 pt-3">
-                    <p className="text-gray-400 text-sm">Total Price</p>
-                    <p className="font-bold text-2xl text-indigo-600">Rs.{calculateTotal()}</p>
+                  <div className="border-t border-gray-200 pt-2 flex justify-between items-baseline">
+                    <span className="text-xs font-semibold text-gray-700">Total Price:</span>
+                    <span className="font-bold text-xl text-indigo-600">Rs.{calculateTotal().toLocaleString()}</span>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>
@@ -397,38 +371,7 @@ const Booking = () => {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-12 px-10 mt-auto">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-10">
-          <div>
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <FaCar /> CarRental
-            </h2>
-            <p className="text-gray-400">
-              Your trusted partner for car rentals. Quality vehicles at affordable prices.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-            <p className="text-gray-400">Email: info@carrental.com</p>
-            <p className="text-gray-400">Phone: +91 77123 4567</p>
-            <p className="text-gray-400">Address: 123 Main St, New York, NY 10001</p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Follow Us</h2>
-            <div className="flex gap-5 text-gray-400">
-              <a href="#" className="hover:text-white transition">Facebook</a>
-              <a href="#" className="hover:text-white transition">Twitter</a>
-              <a href="#" className="hover:text-white transition">Instagram</a>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-700 my-8"></div>
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

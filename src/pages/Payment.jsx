@@ -38,6 +38,8 @@ import {
 import { db, auth } from "../firebase/firebase";
 import { sendBookingEmail } from "../services/email";
 import getBackendUrl from "../utils/backendUrl";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 // Stripe Sandbox Publishable Key
 const RAW_STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
@@ -424,8 +426,8 @@ const PaymentForm = ({
 
   return (
     <div className="flex justify-center">
-      <div className="w-full max-w-3xl bg-white shadow-lg border border-gray-200 rounded-3xl p-8 md:p-10">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+      <div className="w-full max-w-3xl bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-8 md:p-10">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-5 flex items-center gap-2.5">
           <FaCreditCard className="text-indigo-600" />
           Payment Details
         </h2>
@@ -828,57 +830,26 @@ const Payment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-hidden">
       {/* NAVBAR */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <FaCar className="text-3xl text-indigo-600" />
-          <h1 className="text-3xl font-bold text-gray-900">CarRental</h1>
-        </div>
-
-        <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaHome /> Home
-          </Link>
-          <Link to="/cars" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaCar /> Cars
-          </Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaInfoCircle /> About
-          </Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaPhone /> Contact
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-5">
-          {user && (
-            <button
-              onClick={handleLogout}
-              className="bg-gray-700 hover:bg-red-600 border border-gray-300 px-5 py-2 rounded-lg text-white flex items-center gap-2 transition cursor-pointer"
-            >
-              <FaSignOutAlt /> Logout
-            </button>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* PAGE CONTAINER */}
-      <div className="max-w-7xl mx-auto w-full px-6 py-12 flex-1">
-        <h1 className="text-5xl font-bold text-gray-900 mb-10">Checkout</h1>
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-10 py-6 sm:py-10 flex-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 tracking-tight">Checkout</h1>
 
         <PaymentErrorBoundary>
           {missingBookingData ? (
-            <div className="bg-white shadow-lg border border-gray-200 rounded-3xl p-10 max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Booking information missing
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-8 max-w-xl mx-auto text-center">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Booking Information Missing
               </h2>
-              <p className="text-gray-500 mb-6">
-                Please return to the car selection page and pick a vehicle.
+              <p className="text-gray-500 text-sm mb-6">
+                Please return to the car selection page and pick a vehicle to proceed with booking.
               </p>
               <Link
                 to="/cars"
-                className="inline-block bg-indigo-600 text-white px-8 py-4 rounded-2xl hover:bg-indigo-700 transition"
+                className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition shadow-sm"
               >
                 Back to Cars
               </Link>
@@ -898,36 +869,7 @@ const Payment = () => {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-14 px-10">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
-          <div>
-            <h2 className="text-3xl font-bold flex items-center gap-3 mb-5">
-              <FaCar /> CarRental
-            </h2>
-            <p className="text-gray-400 leading-8">
-              Your trusted partner for car rentals. Quality vehicles at affordable prices.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-3xl font-bold mb-5">Contact Us</h2>
-            <div className="space-y-3 text-gray-400">
-              <p>Email: info@carrental.com</p>
-              <p>Phone: +94 77 123 4567</p>
-              <p>Address: Colombo, Sri Lanka</p>
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-3xl font-bold mb-5">Follow Us</h2>
-            <div className="flex gap-5 text-gray-400">
-              <span className="hover:text-white cursor-pointer">Facebook</span>
-              <span className="hover:text-white cursor-pointer">Twitter</span>
-              <span className="hover:text-white cursor-pointer">Instagram</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -126,15 +126,16 @@ const handleEdit = (driver) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 overflow-x-hidden">
       {/* ================= SIDEBAR ================= */}
       <AdminSidebar />
 
-      <main className="flex-1 p-10 ml-2">
-
-        <div className="flex justify-between mb-6">
-          <h1 className="text-4xl font-bold text-gray-900">Manage Drivers</h1>
+      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Manage Drivers</h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Register and manage private drivers for customer bookings</p>
+          </div>
 
           <button
             onClick={() => {
@@ -148,166 +149,176 @@ const handleEdit = (driver) => {
                 status: "Available"
               });
             }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg flex items-center gap-2"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold shadow-xs transition w-fit cursor-pointer"
           >
-            <FaPlus /> Add Driver
+            <FaPlus className="text-xs" /> Add Driver
           </button>
         </div>
 
         {/* TABLE */}
-        <div className="bg-white shadow-lg border border-gray-200 rounded-2xl overflow-hidden mx-2">
-
+        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden">
           {loading ? (
-            <div className="p-6 text-center text-gray-400">Loading...</div>
+            <div className="p-10 text-center text-sm text-gray-400">Loading drivers...</div>
           ) : (
-            <table className="w-full">
-
-              <thead className="bg-gray-100 border-b border-gray-300">
-                <tr>
-                  <th className="p-4 text-gray-500 font-semibold">ID</th>
-                  <th className="p-4 text-gray-500 font-semibold">Name</th>
-                  <th className="p-4 text-gray-500 font-semibold">Email</th>
-                  <th className="p-4 text-gray-500 font-semibold">Phone</th>
-                  <th className="p-4 text-gray-500 font-semibold">License</th>
-                  <th className="p-4 text-gray-500 font-semibold">Status</th>
-                  <th className="p-4 text-gray-500 font-semibold">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {drivers.map((d, i) => (
-                  <tr key={d.id} className="border-t border-gray-200 hover:bg-gray-50">
-
-                    <td className="p-4 text-gray-500 font-semibold"><div className="flex justify-center gap-4">
-                      {String(i + 1).padStart(3, "0")}
-                      </div>
-                    </td>
-
-                    <td className="p-4 font-semibold text-gray-900"><div className="flex justify-center gap-4">{d.name}</div></td>
-                    <td className="p-4 text-gray-500 font-semibold"><div className="flex justify-center gap-4">{d.email}</div></td>
-                    <td className="p-4 text-gray-500 font-semibold"><div className="flex justify-center gap-4">{d.phone}</div></td>
-                    <td className="p-4 text-gray-500 font-semibold"><div className="flex justify-center gap-4">{d.licenseNo}</div></td>
-
-                    <td className="p-4 text-gray-500 font-semibold">
-                        <div className="flex justify-center gap-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            d.status === "Available"
-                            ? "bg-green-100 text-green-700"
-                            : d.status === "On Trip"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                        >
-                        {(d.status === "Busy" || d.status === "Unavailable") ? "Unavailable" : d.status}
-                      </span>
-                      </div>
-                    </td>
-
-                    <td className="p-4 text-gray-500 font-semibold">
-                        <div className="flex justify-center gap-4">
-
-                            <button
-                            onClick={() => handleEdit(d)}
-                            className="text-indigo-600 hover:text-indigo-500"
-                            >
-                            <FaEdit />
-                            </button>
-
-                            <button
-                            onClick={() => handleDelete(d.id)}
-                            className="text-red-600 hover:text-red-500"
-                            >
-                            <FaTrash />
-                            </button>
-
-                        </div>
-                    </td>
-
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-left border-collapse min-w-[750px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3.5">ID</th>
+                    <th className="px-4 py-3.5">Name</th>
+                    <th className="px-4 py-3.5">Email</th>
+                    <th className="px-4 py-3.5">Phone</th>
+                    <th className="px-4 py-3.5">License</th>
+                    <th className="px-4 py-3.5">Status</th>
+                    <th className="px-4 py-3.5 text-center">Actions</th>
                   </tr>
-                ))}
-              </tbody>
+                </thead>
 
-            </table>
+                <tbody className="divide-y divide-gray-200 text-sm">
+                  {drivers.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-sm text-gray-400">
+                        No drivers added yet. Click &quot;Add Driver&quot; to register one.
+                      </td>
+                    </tr>
+                  ) : (
+                    drivers.map((d, i) => (
+                      <tr key={d.id} className="hover:bg-gray-50/80 transition">
+                        <td className="px-4 py-3.5 text-xs text-gray-400 font-mono">
+                          {String(i + 1).padStart(3, "0")}
+                        </td>
+
+                        <td className="px-4 py-3.5 font-semibold text-gray-900 whitespace-nowrap">
+                          {d.name}
+                        </td>
+                        <td className="px-4 py-3.5 text-gray-600 whitespace-nowrap text-sm">
+                          {d.email}
+                        </td>
+                        <td className="px-4 py-3.5 text-gray-600 whitespace-nowrap text-sm">
+                          {d.phone}
+                        </td>
+                        <td className="px-4 py-3.5 text-gray-600 whitespace-nowrap text-sm font-mono text-xs">
+                          {d.licenseNo}
+                        </td>
+
+                        <td className="px-4 py-3.5 whitespace-nowrap">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                              d.status === "Available"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : d.status === "On Trip"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {(d.status === "Busy" || d.status === "Unavailable") ? "Unavailable" : d.status}
+                          </span>
+                        </td>
+
+                        <td className="px-4 py-3.5 whitespace-nowrap text-center">
+                          <div className="flex items-center justify-center gap-3">
+                            <button
+                              onClick={() => handleEdit(d)}
+                              className="p-1.5 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition"
+                              title="Edit Driver"
+                            >
+                              <FaEdit />
+                            </button>
+
+                            <button
+                              onClick={() => handleDelete(d.id)}
+                              className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition"
+                              title="Delete Driver"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
-
         </div>
       </main>
 
       {/* ================= MODAL ================= */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
-
-          <div className="bg-white shadow-lg border border-gray-300 p-6 rounded-xl w-[400px]">
-
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white shadow-xl border border-gray-200 p-5 sm:p-6 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
               {editingDriver ? "Edit Driver" : "Add Driver"}
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Driver Name</label>
+                <input
+                  className="w-full bg-white border border-gray-300 rounded-xl p-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+                  placeholder="e.g. Senerathna"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                className="w-full bg-white border border-gray-300 rounded-xl p-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none"
-                placeholder="Name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                required
-              />
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  className="w-full bg-white border border-gray-300 rounded-xl p-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+                  placeholder="e.g. driver@carrental.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                className="w-full bg-white border border-gray-300 rounded-xl p-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-              />
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  className="w-full bg-white border border-gray-300 rounded-xl p-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+                  placeholder="e.g. +94 77 123 4567"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                className="w-full bg-white border border-gray-300 rounded-xl p-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                required
-              />
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">License Number</label>
+                <input
+                  className="w-full bg-white border border-gray-300 rounded-xl p-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+                  placeholder="e.g. B1234567"
+                  value={formData.licenseNo}
+                  onChange={(e) => setFormData({ ...formData, licenseNo: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                className="w-full bg-white border border-gray-300 rounded-xl p-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none"
-                placeholder="License No"
-                value={formData.licenseNo}
-                onChange={(e) =>
-                  setFormData({ ...formData, licenseNo: e.target.value })
-                }
-                required
-              />
-
-              <div className="flex gap-3 mt-4">
-
-                <button className="bg-indigo-600 hover:bg-indigo-700 text-white flex-1 p-2 rounded">
-                  {editingDriver ? "Update" : "Add"}
+              <div className="flex gap-3 pt-3">
+                <button
+                  type="submit"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white flex-1 py-2.5 rounded-xl font-semibold text-sm shadow-xs transition"
+                >
+                  {editingDriver ? "Update Driver" : "Add Driver"}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="bg-gray-200 text-gray-700 border border-gray-300 hover:bg-gray-300 flex-1 p-2 rounded"
+                  className="bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 flex-1 py-2.5 rounded-xl font-semibold text-sm transition"
                 >
                   Cancel
                 </button>
-
               </div>
-
             </form>
-
           </div>
         </div>
       )}
-
     </div>
   );
 };

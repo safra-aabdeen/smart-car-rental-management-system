@@ -1,7 +1,5 @@
 // Contact.jsx
-
 import React, { useState, useEffect } from "react";
-
 import {
   FaMapMarkerAlt,
   FaPhoneAlt,
@@ -10,521 +8,252 @@ import {
   FaTwitter,
   FaInstagram,
   FaPaperPlane,
-  FaCar,
-  FaHome,
-  FaInfoCircle,
-  FaSignOutAlt,
 } from "react-icons/fa";
-
 import {
   collection,
   addDoc,
   serverTimestamp,
-  doc,
-  getDoc,
 } from "firebase/firestore";
-
-import {
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
-
-import { Link, useNavigate } from "react-router-dom";
-
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { db, auth } from "../firebase/firebase";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Contact = () => {
-
   const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
-
-  const [userName, setUserName] = useState("");
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
-
   const [loading, setLoading] = useState(false);
 
   /* ================= USER LOGIN ================= */
-
   useEffect(() => {
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-
-      if (user) {
-        setUser(user);
-
-        try {
-
-          const docRef = doc(db, "users", user.uid);
-
-          const docSnap = await getDoc(docRef);
-
-          setUserName(
-            docSnap.exists()
-              ? docSnap.data().userName || user.email
-              : user.email
-          );
-
-        } catch (error) {
-
-          console.log(error);
-
-          setUserName(user.email);
-
-        }
-
-      } else {
-
-        setUserName("");
-
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser?.email) {
+        setFormData((prev) => ({
+          ...prev,
+          email: prev.email || currentUser.email,
+          name: prev.name || currentUser.displayName || "",
+        }));
       }
-
     });
-
     return () => unsubscribe();
-
   }, []);
 
-  /* ================= LOGOUT ================= */
-
-  const handleLogout = async () => {
-
-    try {
-
-      await signOut(auth);
-
-      navigate("/");
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-
-  };
-
   /* ================= INPUT CHANGE ================= */
-
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-
   };
 
   /* ================= SEND MESSAGE ================= */
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     if (!user) {
-       alert("Please login first to send message");
-       navigate("/login");
-       return;
+      alert("Please login first to send message");
+      navigate("/login");
+      return;
     }
 
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.message
-    ) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
       alert("Please fill all fields");
       return;
     }
 
     try {
-
       setLoading(true);
-
       await addDoc(collection(db, "contactMessages"), {
-        ...formData,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
         userId: user.uid,
         createdAt: serverTimestamp(),
       });
 
       alert("Message Sent Successfully!");
-
       setFormData({
         name: "",
-        email: "",
+        email: user?.email || "",
         message: "",
       });
-
       setLoading(false);
-
     } catch (error) {
-
       console.log(error);
-
       alert("Error sending message");
-
       setLoading(false);
-
     }
-
   };
 
   return (
-
-    <div className="bg-gray-50 min-h-screen">
-
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
       {/* ================= NAVBAR ================= */}
-
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center">
-
-        <div className="flex items-center gap-2">
-
-          <FaCar className="text-indigo-600 text-3xl" />
-
-          <h1 className="text-3xl font-bold text-gray-900">
-            CarRental
-          </h1>
-
-        </div>
-
-        <ul className="hidden md:flex gap-10 text-gray-600 text-lg items-center">
-
-          <Link
-            to="/"
-            className="flex items-center gap-2 hover:text-indigo-600"
-          >
-            <FaHome />
-            Home
-          </Link>
-
-          <Link
-            to="/cars"
-            className="flex items-center gap-2 hover:text-indigo-600"
-          >
-            <FaCar />
-            Cars
-          </Link>
-
-          <Link
-            to="/about"
-            className="flex items-center gap-2 hover:text-indigo-600"
-          >
-            <FaInfoCircle />
-            About
-          </Link>
-
-          <Link
-            to="/contact"
-            className="flex items-center gap-2 text-indigo-600 font-semibold"
-          >
-            <FaPhoneAlt />
-            Contact
-          </Link>
-
-        </ul>
-
-        <div className="flex items-center gap-5">
-
-          {userName ? (
-            <>
-
-              <button
-                onClick={handleLogout}
-                className="bg-gray-700 hover:bg-red-600 text-white px-5 py-2 rounded-lg flex items-center gap-2"
-              >
-                <FaSignOutAlt />
-                Logout
-              </button>
-
-            </>
-          ) : (
-            <>
-
-              <Link
-                to="/login"
-                className="text-indigo-600 text-xl font-semibold px-5 py-2 hover:text-indigo-700"
-              >
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
-              >
-                Register
-              </Link>
-
-            </>
-          )}
-
-        </div>
-
-      </nav>
+      <Navbar active="contact" />
 
       {/* ================= HERO ================= */}
-
-      <section className="bg-white py-16 px-10 text-center border-b border-gray-200">
-
-        <h1 className="text-6xl font-bold text-gray-900">
-          Contact Us
-        </h1>
-
-        <p className="text-gray-500 text-xl mt-6 max-w-4xl mx-auto leading-relaxed">
-          Have questions? We'd love to hear from you.
-          Send us a message and our team will respond quickly.
-        </p>
-
+      <section className="bg-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-10 text-center border-b border-gray-200">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+            Contact Us
+          </h1>
+          <p className="text-gray-500 text-base sm:text-lg md:text-xl mt-4 sm:mt-6 leading-relaxed">
+            Have questions or need assistance? We'd love to hear from you. Send us a message and our team will respond promptly.
+          </p>
+        </div>
       </section>
 
       {/* ================= MAIN SECTION ================= */}
-
-      <section className="px-10 py-16">
-
-        <div className="grid md:grid-cols-2 gap-10">
+      <section className="px-4 sm:px-6 md:px-10 py-10 sm:py-16 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10">
 
           {/* ================= FORM ================= */}
-
-          <div className="bg-white shadow-lg rounded-2xl p-8">
-
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
+          <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-6 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">
               Get in Touch
             </h2>
 
-            <form onSubmit={handleSubmit}>
-
-              <div className="mb-5">
-
-                <label className="font-semibold text-gray-600 block mb-2">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              <div>
+                <label className="text-xs sm:text-sm font-semibold text-gray-700 block mb-1.5">
                   Your Name
                 </label>
-
                 <input
                   type="text"
                   name="name"
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full bg-white border border-gray-300 p-4 rounded-xl text-gray-900 placeholder-gray-400 outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
                 />
-
               </div>
 
-              <div className="mb-5">
-
-                <label className="font-semibold text-gray-600 block mb-2">
+              <div>
+                <label className="text-xs sm:text-sm font-semibold text-gray-700 block mb-1.5">
                   Email Address
                 </label>
-
                 <input
                   type="email"
                   name="email"
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full bg-white border border-gray-300 p-4 rounded-xl text-gray-900 placeholder-gray-400 outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
                 />
-
               </div>
 
-              <div className="mb-5">
-
-                <label className="font-semibold text-gray-600 block mb-2">
+              <div>
+                <label className="text-xs sm:text-sm font-semibold text-gray-700 block mb-1.5">
                   Message
                 </label>
-
                 <textarea
-                  rows="6"
+                  rows="5"
                   name="message"
                   placeholder="How can we help you?"
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full bg-white border border-gray-300 p-4 rounded-xl text-gray-900 placeholder-gray-400 outline-none resize-none focus:border-indigo-500"
+                  className="w-full bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 outline-none resize-none focus:ring-2 focus:ring-indigo-500"
+                  required
                 ></textarea>
-
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl flex items-center justify-center gap-3 text-lg font-semibold"
+                disabled={loading}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-3 sm:py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm sm:text-base font-semibold shadow-sm transition"
               >
-
-                <FaPaperPlane />
-
+                <FaPaperPlane className="text-xs" />
                 {loading ? "Sending..." : "Send Message"}
-
               </button>
-
             </form>
-
           </div>
 
           {/* ================= CONTACT INFO ================= */}
-
-          <div className="space-y-6">
-
-            <div className="bg-white shadow-lg rounded-2xl p-6 flex gap-5">
-
-              <div className="w-16 h-16 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-2xl">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-6 flex items-start gap-4">
+              <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-xl shrink-0">
                 <FaMapMarkerAlt />
               </div>
-
               <div>
-
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
                   Address
                 </h3>
-
-                <p className="text-gray-500">
-                  123 Main Street
-                </p>
-
-                <p className="text-gray-500">
-                  Colombo, Sri Lanka
-                </p>
-
+                <p className="text-gray-500 text-sm">123 Galle Road</p>
+                <p className="text-gray-500 text-sm">Colombo, Sri Lanka</p>
               </div>
-
             </div>
 
-            <div className="bg-white shadow-lg rounded-2xl p-6 flex gap-5">
-
-              <div className="w-16 h-16 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-2xl">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-6 flex items-start gap-4">
+              <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-xl shrink-0">
                 <FaPhoneAlt />
               </div>
-
               <div>
-
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
                   Phone
                 </h3>
-
-                <p className="text-gray-500">
-                  +94 77 123 4567
-                </p>
-
-                <p className="text-gray-500">
-                  Available 24/7
-                </p>
-
+                <p className="text-gray-500 text-sm">+94 77 123 4567</p>
+                <p className="text-gray-400 text-xs mt-0.5">Available 24/7 for booking support</p>
               </div>
-
             </div>
 
-            <div className="bg-white shadow-lg rounded-2xl p-6 flex gap-5">
-
-              <div className="w-16 h-16 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 text-2xl">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-6 flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 text-xl shrink-0">
                 <FaEnvelope />
               </div>
-
               <div>
-
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
                   Email
                 </h3>
-
-                <p className="text-gray-500">
-                  info@carrental.com
-                </p>
-
-                <p className="text-gray-500">
-                  support@carrental.com
-                </p>
-
+                <p className="text-gray-500 text-sm">info@carrental.com</p>
+                <p className="text-gray-500 text-sm">support@carrental.com</p>
               </div>
-
             </div>
 
-            <div className="bg-white shadow-lg rounded-2xl p-6">
-
-              <h3 className="text-2xl font-bold text-gray-900 mb-5">
-                Follow Us
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-6">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4">
+                Connect With Us
               </h3>
-
-              <div className="flex gap-5">
-
-                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-full flex items-center justify-center cursor-pointer">
-                  <FaFacebookF />
-                </div>
-
-                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-full flex items-center justify-center cursor-pointer">
-                  <FaTwitter />
-                </div>
-
-                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-full flex items-center justify-center cursor-pointer">
-                  <FaInstagram />
-                </div>
-
+              <div className="flex gap-3">
+                <a
+                  href="#"
+                  aria-label="Facebook"
+                  className="w-10 h-10 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl flex items-center justify-center transition"
+                >
+                  <FaFacebookF className="text-sm" />
+                </a>
+                <a
+                  href="#"
+                  aria-label="Twitter"
+                  className="w-10 h-10 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl flex items-center justify-center transition"
+                >
+                  <FaTwitter className="text-sm" />
+                </a>
+                <a
+                  href="#"
+                  aria-label="Instagram"
+                  className="w-10 h-10 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl flex items-center justify-center transition"
+                >
+                  <FaInstagram className="text-sm" />
+                </a>
               </div>
-
             </div>
-
           </div>
 
         </div>
-
       </section>
 
       {/* ================= FOOTER ================= */}
-
-      <footer className="bg-gray-900 text-white py-12 px-10">
-
-        <div className="grid md:grid-cols-3 gap-10">
-
-          <div>
-
-            <h2 className="text-2xl font-bold mb-4">
-              CarRental
-            </h2>
-
-            <p className="text-gray-400">
-              Your trusted partner for car rentals.
-            </p>
-
-          </div>
-
-          <div>
-
-            <h2 className="text-2xl font-bold mb-4">
-              Contact Us
-            </h2>
-
-            <p>Email: info@carrental.com</p>
-
-            <p>Phone: +94 77 123 4567</p>
-
-          </div>
-
-          <div>
-
-            <h2 className="text-2xl font-bold mb-4">
-              Follow Us
-            </h2>
-
-            <div className="flex gap-5">
-              <p>Facebook</p>
-              <p>Twitter</p>
-              <p>Instagram</p>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="border-t border-gray-700 my-8"></div>
-
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-
-      </footer>
-
+      <Footer />
     </div>
-
   );
-
 };
 
 export default Contact;

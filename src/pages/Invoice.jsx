@@ -16,6 +16,8 @@ import {
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Invoice = () => {
   const navigate = useNavigate();
@@ -69,48 +71,23 @@ const Invoice = () => {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-hidden">
       {/* NAVBAR - hidden on print */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center print:hidden">
-        <div className="flex items-center gap-3">
-          <FaCar className="text-3xl text-indigo-600" />
-          <h1 className="text-3xl font-bold text-gray-900">CarRental</h1>
-        </div>
-        <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaHome /> Home
-          </Link>
-          <Link to="/cars" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaCar /> Cars
-          </Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaInfoCircle /> About
-          </Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaPhone /> Contact
-          </Link>
-        </div>
-        <div className="flex items-center gap-5">
-          <button
-            onClick={handleLogout}
-            className="bg-gray-700 hover:bg-red-600 border border-gray-300 px-5 py-2 rounded-lg text-white flex items-center gap-2 transition"
-          >
-            <FaSignOutAlt /> Logout
-          </button>
-        </div>
-      </nav>
+      <div className="print:hidden">
+        <Navbar />
+      </div>
 
       {/* CONTENT */}
-      <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
+      <div className="flex-1 px-4 sm:px-6 md:px-10 py-6 sm:py-10 max-w-4xl mx-auto w-full">
         {missingData ? (
-          <div className="bg-white shadow-lg border border-gray-200 rounded-3xl p-10 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Invoice not available</h2>
-            <p className="text-gray-500 mb-6">
-              No booking data found. Please check your bookings.
+          <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-8 max-w-md mx-auto text-center">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Invoice Not Available</h2>
+            <p className="text-gray-500 text-sm mb-6">
+              No booking data found. Please check your bookings in dashboard.
             </p>
             <Link
               to="/dashboard"
-              className="inline-block bg-indigo-600 text-white px-8 py-4 rounded-2xl hover:bg-indigo-700 transition"
+              className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition shadow-sm"
             >
               Go to Dashboard
             </Link>
@@ -118,190 +95,192 @@ const Invoice = () => {
         ) : (
           <>
             {/* Action Buttons - hidden on print */}
-            <div className="flex justify-between items-center mb-8 print:hidden">
+            <div className="flex justify-between items-center mb-6 print:hidden">
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium transition"
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-semibold text-sm transition cursor-pointer"
               >
                 <FaArrowLeft /> Back
               </button>
               <button
                 onClick={handlePrint}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition shadow-md"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition shadow-sm cursor-pointer"
               >
                 <FaPrint /> Print Invoice
               </button>
             </div>
 
             {/* INVOICE CARD */}
-            <div className="bg-white shadow-lg border border-gray-200 rounded-3xl p-10 print:shadow-none print:rounded-none">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-8 md:p-10 print:shadow-none print:rounded-none print:border-none">
               {/* Header */}
-              <div className="flex justify-between items-start border-b border-gray-300 pb-8 mb-8">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-gray-200 pb-6 mb-6">
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <FaCar className="text-3xl text-indigo-600" />
-                    <h1 className="text-3xl font-bold text-gray-900">CarRental</h1>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <FaCar className="text-2xl text-indigo-600" />
+                    <span className="text-2xl font-bold text-gray-900">CarRental</span>
                   </div>
-                  <p className="text-gray-500">Colombo, Sri Lanka</p>
-                  <p className="text-gray-500">info@carrental.com</p>
-                  <p className="text-gray-500">+94 77 123 4567</p>
+                  <p className="text-gray-500 text-xs sm:text-sm">Colombo, Sri Lanka</p>
+                  <p className="text-gray-500 text-xs sm:text-sm">info@carrental.com</p>
+                  <p className="text-gray-500 text-xs sm:text-sm">+94 77 123 4567</p>
                 </div>
-                <div className="text-right">
-                  <h2 className="text-4xl font-bold text-indigo-600 mb-2">INVOICE</h2>
-                  <p className="text-gray-500">
-                    <span className="font-semibold text-gray-600">Date: </span>
+                <div className="text-left sm:text-right">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-indigo-600 mb-1">INVOICE</h2>
+                  <p className="text-gray-500 text-xs sm:text-sm">
+                    <span className="font-semibold text-gray-700">Date: </span>
                     {today}
                   </p>
-                  <p className="text-gray-500 mt-1">
-                    <span className="font-semibold text-gray-600">Order ID: </span>
-                    {invoiceData.orderId}
+                  <p className="text-gray-500 text-xs sm:text-sm mt-0.5">
+                    <span className="font-semibold text-gray-700">Order ID: </span>
+                    <span className="font-mono text-xs">{invoiceData.orderId}</span>
                   </p>
                 </div>
               </div>
 
               {/* Customer Info */}
-              <div className="grid md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 pb-6 border-b border-gray-200">
                 <div>
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
                     Billed To
                   </h3>
-                  <p className="text-lg font-semibold text-gray-900">
+                  <p className="text-base font-semibold text-gray-900">
                     {invoiceData.customerName || userName || "Customer"}
                   </p>
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 text-xs sm:text-sm">
                     {invoiceData.customerEmail || user?.email || ""}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
                     Payment Status
                   </h3>
-                  <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
-                    <FaCheckCircle /> Paid
+                  <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                    <FaCheckCircle className="text-[10px]" /> Paid
                   </span>
-                  <p className="text-gray-500 mt-2">
-                    Via {invoiceData.paymentMethod || "Stripe"}
+                  <p className="text-gray-500 text-xs mt-1">
+                    Via {invoiceData.paymentMethod || "Stripe Sandbox"}
                   </p>
                 </div>
               </div>
 
               {/* Booking Details */}
-              <div className="mb-8 pb-8 border-b border-gray-300">
-                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+              <div className="mb-6 pb-6 border-b border-gray-200">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
                   Booking Details
                 </h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-gray-100 border border-gray-300/50 p-4 rounded-xl">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                      <FaCar /> Car
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-xl">
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
+                      <FaCar className="text-indigo-600 text-xs" /> Car
                     </div>
-                    <p className="font-bold text-gray-900 text-lg">
+                    <p className="font-bold text-gray-900 text-sm truncate">
                       {invoiceData.carName || "N/A"}
                     </p>
                   </div>
-                  <div className="bg-gray-100 border border-gray-300/50 p-4 rounded-xl">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                      <FaCalendarAlt /> Pickup Date
+                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-xl">
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
+                      <FaCalendarAlt className="text-indigo-600 text-xs" /> Pickup
                     </div>
-                    <p className="font-bold text-gray-900 text-lg">
+                    <p className="font-bold text-gray-900 text-sm">
                       {invoiceData.pickupDate || "N/A"}
                     </p>
                   </div>
-                  <div className="bg-gray-100 border border-gray-300/50 p-4 rounded-xl">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                      <FaCalendarAlt /> Return Date
+                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-xl">
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
+                      <FaCalendarAlt className="text-indigo-600 text-xs" /> Return
                     </div>
-                    <p className="font-bold text-gray-900 text-lg">
+                    <p className="font-bold text-gray-900 text-sm">
                       {invoiceData.returnDate || "N/A"}
                     </p>
                   </div>
-                  <div className="bg-gray-100 border border-gray-300/50 p-4 rounded-xl">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                      <FaMapMarkerAlt /> Location
+                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-xl">
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
+                      <FaMapMarkerAlt className="text-indigo-600 text-xs" /> Location
                     </div>
-                    <p className="font-bold text-gray-900 text-lg">
+                    <p className="font-bold text-gray-900 text-sm truncate">
                       {invoiceData.pickupLocation || "N/A"}
                     </p>
                   </div>
-                  <div className="bg-gray-100 border border-gray-300/50 p-4 rounded-xl">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                      <FaUserTie /> Driver
+                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-xl">
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
+                      <FaUserTie className="text-indigo-600 text-xs" /> Driver
                     </div>
-                    <p className="font-bold text-gray-900 text-lg">
-                      {invoiceData.needDriver ? "Yes" : "No"}
+                    <p className="font-bold text-gray-900 text-sm">
+                      {invoiceData.needDriver ? "Included" : "Self-drive"}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Price Breakdown Table */}
-              <div className="mb-8">
-                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+              <div className="mb-6">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
                   Price Breakdown
                 </h3>
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-gray-300">
-                      <th className="text-left py-3 text-gray-500 font-semibold">Description</th>
-                      <th className="text-center py-3 text-gray-500 font-semibold">Days</th>
-                      <th className="text-center py-3 text-gray-500 font-semibold">Rate</th>
-                      <th className="text-right py-3 text-gray-500 font-semibold">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-gray-300">
-                      <td className="py-4 text-gray-900 font-medium">
-                        {invoiceData.carName || "Car Rental"}
-                      </td>
-                      <td className="py-4 text-center text-gray-500">
-                        {invoiceData.totalDays || 0}
-                      </td>
-                      <td className="py-4 text-center text-gray-500">
-                        LKR {(invoiceData.pricePerDay || 0).toLocaleString()}
-                      </td>
-                      <td className="py-4 text-right text-gray-900 font-semibold">
-                        LKR {carTotal.toLocaleString()}
-                      </td>
-                    </tr>
-                    {invoiceData.needDriver && (
-                      <tr className="border-b border-gray-300">
-                        <td className="py-4 text-gray-900 font-medium">
-                          Driver Service
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full min-w-[460px] text-sm">
+                    <thead>
+                      <tr className="border-b-2 border-gray-200">
+                        <th className="text-left py-2.5 text-gray-500 font-semibold text-xs">Description</th>
+                        <th className="text-center py-2.5 text-gray-500 font-semibold text-xs">Days</th>
+                        <th className="text-center py-2.5 text-gray-500 font-semibold text-xs">Rate</th>
+                        <th className="text-right py-2.5 text-gray-500 font-semibold text-xs">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      <tr>
+                        <td className="py-3.5 text-gray-900 font-medium">
+                          {invoiceData.carName || "Car Rental"}
                         </td>
-                        <td className="py-4 text-center text-gray-500">
+                        <td className="py-3.5 text-center text-gray-500">
                           {invoiceData.totalDays || 0}
                         </td>
-                        <td className="py-4 text-center text-gray-500">
-                          LKR {(invoiceData.driverCharge || 1750).toLocaleString()}
+                        <td className="py-3.5 text-center text-gray-500">
+                          LKR {(invoiceData.pricePerDay || 0).toLocaleString()}
                         </td>
-                        <td className="py-4 text-right text-gray-900 font-semibold">
-                          LKR {driverTotal.toLocaleString()}
+                        <td className="py-3.5 text-right text-gray-900 font-semibold">
+                          LKR {carTotal.toLocaleString()}
                         </td>
                       </tr>
-                    )}
-                  </tbody>
-                  <tfoot>
-                    <tr className="border-t-2 border-gray-300">
-                      <td
-                        colSpan="3"
-                        className="py-5 text-right text-xl font-bold text-gray-900"
-                      >
-                        Total Amount:
-                      </td>
-                      <td className="py-5 text-right text-2xl font-bold text-indigo-600">
-                        LKR {(invoiceData.totalAmount || 0).toLocaleString()}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
+                      {invoiceData.needDriver && (
+                        <tr>
+                          <td className="py-3.5 text-gray-900 font-medium">
+                            Driver Service
+                          </td>
+                          <td className="py-3.5 text-center text-gray-500">
+                            {invoiceData.totalDays || 0}
+                          </td>
+                          <td className="py-3.5 text-center text-gray-500">
+                            LKR {(invoiceData.driverCharge || 1750).toLocaleString()}
+                          </td>
+                          <td className="py-3.5 text-right text-gray-900 font-semibold">
+                            LKR {driverTotal.toLocaleString()}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t-2 border-gray-200">
+                        <td
+                          colSpan="3"
+                          className="py-4 text-right text-base sm:text-lg font-bold text-gray-900"
+                        >
+                          Total Amount:
+                        </td>
+                        <td className="py-4 text-right text-xl sm:text-2xl font-bold text-indigo-600">
+                          LKR {(invoiceData.totalAmount || 0).toLocaleString()}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
               </div>
 
               {/* Footer Note */}
-              <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-6 text-center">
-                <p className="text-indigo-600 font-medium">
+              <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 sm:p-5 text-center">
+                <p className="text-indigo-700 font-semibold text-xs sm:text-sm">
                   Thank you for choosing CarRental! We wish you a safe and pleasant journey.
                 </p>
-                <p className="text-indigo-500 text-sm mt-2">
+                <p className="text-gray-500 text-xs mt-1">
                   For support, contact us at info@carrental.com or +94 77 123 4567
                 </p>
               </div>
@@ -316,44 +295,15 @@ const Invoice = () => {
           .print\\:hidden { display: none !important; }
           .print\\:shadow-none { box-shadow: none !important; }
           .print\\:rounded-none { border-radius: 0 !important; }
+          .print\\:border-none { border: none !important; }
           body { background: white !important; }
         }
       `}</style>
 
       {/* FOOTER - hidden on print */}
-      <footer className="bg-gray-900 border-t border-gray-200 text-white py-14 px-10 print:hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
-          <div>
-            <h2 className="text-3xl font-bold flex items-center gap-3 mb-5">
-              <FaCar className="text-indigo-600" /> CarRental
-            </h2>
-            <p className="text-gray-500 leading-8">
-              Your trusted partner for car rentals. Quality vehicles at
-              affordable prices.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-3xl font-bold mb-5 text-white">Contact Us</h2>
-            <div className="space-y-3 text-gray-500">
-              <p>Email: info@carrental.com</p>
-              <p>Phone: +94 77 123 4567</p>
-              <p>Address: Colombo, Sri Lanka</p>
-            </div>
-          </div>
-          <div>
-            <h2 className="text-3xl font-bold mb-5 text-white">Follow Us</h2>
-            <div className="flex gap-5 text-gray-500">
-              <span className="hover:text-indigo-600 cursor-pointer transition">Facebook</span>
-              <span className="hover:text-indigo-600 cursor-pointer transition">Twitter</span>
-              <span className="hover:text-indigo-600 cursor-pointer transition">Instagram</span>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-200 my-8"></div>
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-      </footer>
+      <div className="print:hidden">
+        <Footer />
+      </div>
     </div>
   );
 };

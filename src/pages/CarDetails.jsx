@@ -7,6 +7,8 @@ import { FaCar, FaHome, FaPhone, FaInfoCircle, FaStar, FaStarHalfAlt, FaRegStar,
 
 import localCars from "../data/Cars";
 import getCarImage from "../utils/carImage";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -129,52 +131,25 @@ const CarDetails = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
 
       {/* NAVBAR */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <FaCar className="text-indigo-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">CarRental</h1>
-        </div>
-
-        <ul className="hidden md:flex gap-10 text-gray-700 text-lg items-center">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600"><FaHome /> Home</Link>
-          <Link to="/cars" className="flex items-center gap-2 hover:text-indigo-600"><FaCar /> Cars</Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600"><FaInfoCircle /> About</Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600"><FaPhone /> Contact</Link>
-        </ul>
-
-        <div className="flex items-center gap-5">
-          {userName ? (
-            <>
-              <button onClick={handleLogout} className="bg-gray-700 hover:bg-red-600 text-white px-5 py-2 rounded-lg flex items-center gap-2">
-                <FaSignOutAlt /> Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="text-indigo-600 text-xl font-semibold px-5 py-2 hover:text-indigo-700">Login</Link>
-              <Link to="/register" className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">Register</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar active="cars" />
 
       {/* CAR DETAILS CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-10 py-6 sm:py-10">
 
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-indigo-600 font-semibold mb-6 hover:underline"
+          className="flex items-center gap-2 text-indigo-600 font-semibold mb-6 hover:underline text-sm sm:text-base cursor-pointer"
         >
-          <FaArrowLeft /> Back
+          <FaArrowLeft /> Back to Cars
         </button>
 
-        <div className="bg-white shadow-lg rounded-2xl overflow-hidden grid md:grid-cols-2 gap-8 p-8">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 p-5 sm:p-8">
 
           {/* IMAGE SECTION */}
-          <div className="rounded-xl overflow-hidden">
+          <div className="rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center max-h-[380px]">
             <img
               src={getCarImage(car)}
               alt={car.name}
@@ -189,63 +164,65 @@ const CarDetails = () => {
           {/* INFO SECTION */}
           <div className="flex flex-col justify-between">
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <h1 className="text-4xl font-bold text-gray-900">{car.name}</h1>
-                <div className="flex items-center gap-1 text-yellow-500 text-xl">
+              <div className="flex justify-between items-start gap-3 mb-3">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{car.name}</h1>
+                <div className="flex items-center gap-1 text-yellow-500 text-base font-semibold shrink-0">
                   <FaStar /> {car.rating}
                 </div>
               </div>
 
-              <p className="text-4xl font-bold text-indigo-600 mb-6">Rs.{car.price}<span className="text-lg text-gray-400">/day</span></p>
+              <p className="text-2xl sm:text-3xl font-bold text-indigo-600 mb-5">
+                Rs.{car.price}<span className="text-sm text-gray-400 font-normal">/day</span>
+              </p>
 
-              <div className="grid grid-cols-2 gap-4 text-gray-900">
-                <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg">
-                  <p className="text-sm text-gray-400">Type</p>
-                  <p className="font-semibold text-lg">{car.type}</p>
+              <div className="grid grid-cols-2 gap-3 text-gray-900">
+                <div className="bg-gray-50 border border-gray-200 p-3.5 rounded-xl">
+                  <p className="text-xs text-gray-400">Type</p>
+                  <p className="font-semibold text-sm sm:text-base">{car.type}</p>
                 </div>
-                <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg flex items-center gap-2">
-                  <FaUsers className="text-indigo-600" />
+                <div className="bg-gray-50 border border-gray-200 p-3.5 rounded-xl flex items-center gap-2.5">
+                  <FaUsers className="text-indigo-600 text-sm" />
                   <div>
-                    <p className="text-sm text-gray-400">Seats</p>
-                    <p className="font-semibold text-lg">{car.seats}</p>
+                    <p className="text-xs text-gray-400">Seats</p>
+                    <p className="font-semibold text-sm sm:text-base">{car.seats} Seats</p>
                   </div>
                 </div>
-                <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg flex items-center gap-2">
-                  <FaGasPump className="text-indigo-600" />
+                <div className="bg-gray-50 border border-gray-200 p-3.5 rounded-xl flex items-center gap-2.5">
+                  <FaGasPump className="text-indigo-600 text-sm" />
                   <div>
-                    <p className="text-sm text-gray-400">Fuel</p>
-                    <p className="font-semibold text-lg">{car.fuelType || "Petrol"}</p>
+                    <p className="text-xs text-gray-400">Fuel</p>
+                    <p className="font-semibold text-sm sm:text-base">{car.fuelType || "Petrol"}</p>
                   </div>
                 </div>
-                <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg">
-                  <p className="text-sm text-gray-400">Status</p>
-                  <p className={`font-semibold text-lg ${car.status === "Available" ? "text-green-600" : "text-red-600"
-                    }`}>
-                   {car.status === "Available" ? "Available" : "Unavailable"}
+                <div className="bg-gray-50 border border-gray-200 p-3.5 rounded-xl">
+                  <p className="text-xs text-gray-400">Status</p>
+                  <p className={`font-semibold text-sm sm:text-base ${
+                    car.status === "Available" ? "text-green-600" : "text-red-600"
+                  }`}>
+                    {car.status === "Available" ? "Available" : "Unavailable"}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-900">Description</h3>
-                <p className="text-gray-500 leading-relaxed">
-                  Experience comfort and performance with the {car.name}. Perfect for {car.type.toLowerCase()} trips with {car.seats} seats and {car.fuel} engine.
-                  Book now for the best rates.
+              <div className="mt-5">
+                <h3 className="text-base sm:text-lg font-bold mb-1.5 text-gray-900">Description</h3>
+                <p className="text-gray-500 text-xs sm:text-sm leading-relaxed">
+                  Experience comfort and performance with the {car.name}. Perfect for {car.type?.toLowerCase() || "comfortable"} trips with {car.seats} seats and {car.fuelType || "efficient"} engine. Book now for the best rates.
                 </p>
               </div>
             </div>
 
             {/* BOOK BUTTON */}
             {car.status === "Available" ? (
-              <Link to={`/book/${car.id}`} className="w-full mt-8">
-                <button className="w-full py-4 rounded-lg text-white text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 transition">
+              <Link to={`/book/${car.id}`} className="w-full mt-6">
+                <button className="w-full py-3 sm:py-3.5 rounded-xl text-white text-sm sm:text-base font-semibold bg-indigo-600 hover:bg-indigo-700 transition shadow-sm cursor-pointer">
                   Book Now
                 </button>
               </Link>
             ) : (
               <button
                 disabled
-                className="w-full mt-8 py-4 rounded-lg text-gray-500 text-lg font-semibold bg-gray-300 cursor-not-allowed"
+                className="w-full mt-6 py-3 sm:py-3.5 rounded-xl text-gray-400 text-sm sm:text-base font-semibold bg-gray-200 cursor-not-allowed"
               >
                 Currently Unavailable
               </button>
@@ -259,20 +236,20 @@ const CarDetails = () => {
         <div className="bg-white shadow-lg rounded-2xl p-8">
 
           {/* Header with average */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
                 <FaCommentDots className="text-indigo-600" /> Customer Reviews
               </h2>
-              <p className="text-gray-500 mt-1">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-0.5">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
             </div>
 
             {averageRating && (
-              <div className="flex items-center gap-4 mt-4 md:mt-0 bg-gray-100 px-6 py-4 rounded-xl">
-                <span className="text-5xl font-bold text-gray-900">{averageRating}</span>
+              <div className="flex items-center gap-3 bg-gray-50 border border-gray-100 px-4 py-3 rounded-xl">
+                <span className="text-2xl sm:text-3xl font-bold text-gray-900">{averageRating}</span>
                 <div>
                   {renderStars(parseFloat(averageRating))}
-                  <p className="text-sm text-gray-500 mt-1">out of 5</p>
+                  <p className="text-xs text-gray-400 mt-0.5">out of 5</p>
                 </div>
               </div>
             )}
@@ -280,33 +257,33 @@ const CarDetails = () => {
 
           {/* Review list */}
           {reviews.length === 0 ? (
-            <div className="text-center py-12">
-              <FaRegStar className="text-6xl text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No reviews yet</h3>
-              <p className="text-gray-500">Be the first to review this car after your rental!</p>
+            <div className="text-center py-8">
+              <FaRegStar className="text-4xl text-gray-300 mx-auto mb-2" />
+              <h3 className="text-base font-semibold text-gray-900 mb-1">No reviews yet</h3>
+              <p className="text-gray-400 text-xs">Be the first to review this car after your rental!</p>
             </div>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-4">
               {reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="border border-gray-200 rounded-xl p-5 hover:bg-gray-50 transition"
+                  className="border border-gray-100 rounded-xl p-4 sm:p-5 hover:bg-gray-50/50 transition"
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
                     {/* Avatar */}
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shrink-0">
                       {(review.userName || "A").charAt(0).toUpperCase()}
                     </div>
 
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                        <span className="font-bold text-gray-900">{review.userName || "Anonymous"}</span>
-                        <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span className="font-bold text-sm text-gray-900">{review.userName || "Anonymous"}</span>
+                        <div className="flex items-center gap-1.5">
                           {renderStars(review.rating)}
-                          <span className="text-sm text-gray-500 font-medium">{review.rating}/5</span>
+                          <span className="text-xs text-gray-400 font-medium">{review.rating}/5</span>
                         </div>
                         {review.createdAt?.toDate && (
-                          <span className="text-sm text-gray-400">
+                          <span className="text-xs text-gray-400">
                             • {review.createdAt.toDate().toLocaleDateString("en-US", {
                                 year: "numeric",
                                 month: "short",
@@ -315,7 +292,7 @@ const CarDetails = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-500 leading-relaxed">{review.reviewText}</p>
+                      <p className="text-gray-600 text-xs sm:text-sm leading-relaxed break-words">{review.reviewText}</p>
                     </div>
                   </div>
                 </div>
@@ -326,31 +303,7 @@ const CarDetails = () => {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-12 px-10 mt-10">
-        <div className="grid md:grid-cols-3 gap-10 max-w-7xl mx-auto">
-          <div>
-            <h2 className="text-2xl font-bold mb-4">CarRental</h2>
-            <p className="text-gray-400">Your trusted partner for car rentals.</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-            <p>Email: info@carrental.com</p>
-            <p>Phone: +94 77 123 4567</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Follow Us</h2>
-            <div className="flex gap-5">
-              <p>Facebook</p>
-              <p>Twitter</p>
-              <p>Instagram</p>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-700 my-8"></div>
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

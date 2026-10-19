@@ -132,120 +132,130 @@ const [bookingCounts, setBookingCounts] = useState({});
   ).length;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 overflow-x-hidden">
       {/* SIDEBAR */}
+      <AdminSidebar />
 
-            <AdminSidebar />
-
-      <main className="flex-1 p-8">
-
-        <h1 className="text-5xl font-bold text-gray-900 mb-8">
-          Manage Users
-        </h1>
-
-        <div className="bg-white shadow-lg border border-gray-200 rounded-2xl overflow-hidden shadow">
-
-          <table className="w-full">
-
-            <thead className="bg-gray-100 border-b border-gray-300">
-
-              <tr>
-
-                <th className="p-4 text-left text-gray-500 font-semibold">
-                  User ID
-                </th>
-
-                <th className="p-4 text-left text-gray-500 font-semibold">
-                  Name
-                </th>
-
-                <th className="p-4 text-left text-gray-500 font-semibold">
-                  Email
-                </th>
-
-                <th className="p-4 text-left text-gray-500 font-semibold">
-                  Phone
-                </th>
-
-                <th className="p-4 text-left text-gray-500 font-semibold">
-                  Bookings
-                </th>
-
-                <th className="p-4 text-left text-gray-500 font-semibold">
-                  Actions
-                </th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {users.map((user, index) => (
-
-                <tr
-                  key={user.id}
-                  className="border-t border-gray-200 hover:bg-gray-50"
-                >
-
-                  <td className="p-4 text-gray-600">
-                    {String(index + 1).padStart(3, "0")}
-                  </td>
-
-                  <td className="p-4 text-gray-600">
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="bg-indigo-50 p-3 rounded-full">
-
-                        <FaUserCircle className="text-indigo-600 text-xl"/>
-
-                      </div>
-
-                      <span className="font-semibold text-gray-900">
-                        {user.name}
-                      </span>
-
-                    </div>
-
-                  </td>
-
-                  <td className="p-4 text-gray-600">
-                    {user.email}
-                  </td>
-
-                  <td className="p-4 text-gray-600">
-                    {user.phone}
-                  </td>
-
-                  <td className="p-4 text-gray-600">
-                    {bookingCounts[user.id] || 0}
-                  </td>
-
-                  <td className="p-4 text-gray-600">
-
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="text-red-600 hover:text-red-500"
-                    >
-                      <FaTrash />
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
+      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+            Manage Users
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            View registered customers and manage user accounts
+          </p>
         </div>
 
-      </main>
+        {/* STATS CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white shadow-xs border border-gray-200 p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Total Users</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalUsers}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <FaUsers className="text-lg" />
+            </div>
+          </div>
 
+          <div className="bg-white shadow-xs border border-gray-200 p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Customers</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalCustomers}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+              <FaUserTie className="text-lg" />
+            </div>
+          </div>
+
+          <div className="bg-white shadow-xs border border-gray-200 p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Administrators</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalAdmins}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+              <FaUserCircle className="text-lg" />
+            </div>
+          </div>
+        </div>
+
+        {/* USERS TABLE */}
+        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left border-collapse min-w-[700px]">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-3.5">#</th>
+                  <th className="px-4 py-3.5">Name</th>
+                  <th className="px-4 py-3.5">Email</th>
+                  <th className="px-4 py-3.5">Phone</th>
+                  <th className="px-4 py-3.5">Bookings</th>
+                  <th className="px-4 py-3.5 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 text-sm">
+                {users.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="p-8 text-center text-sm text-gray-400">
+                      No users registered yet.
+                    </td>
+                  </tr>
+                ) : (
+                  users.map((user, index) => (
+                    <tr key={user.id} className="hover:bg-gray-50/80 transition">
+                      <td className="px-4 py-3.5 text-xs text-gray-400 font-mono">
+                        {String(index + 1).padStart(3, "0")}
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0 font-semibold text-xs">
+                            {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900 text-sm">
+                              {user.name || "Unknown"}
+                            </p>
+                            {user.role === "admin" && (
+                              <span className="text-[10px] uppercase font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                Admin
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3.5 text-gray-600 whitespace-nowrap text-sm">
+                        {user.email || "N/A"}
+                      </td>
+
+                      <td className="px-4 py-3.5 text-gray-600 whitespace-nowrap text-sm">
+                        {user.phone || "—"}
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <span className="bg-indigo-50 text-indigo-700 font-semibold text-xs px-2.5 py-1 rounded-full">
+                          {bookingCounts[user.id] || 0}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap text-center">
+                        <button
+                          onClick={() => handleDelete(user.id)}
+                          className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition"
+                          title="Delete User"
+                        >
+                          <FaTrash className="text-sm" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

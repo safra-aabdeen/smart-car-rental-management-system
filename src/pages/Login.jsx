@@ -53,11 +53,17 @@ const Login = () => {
       {/* login box */}
       <form
         onSubmit={handleLogin}
-        className="relative z-10 bg-white/90 backdrop-blur-xl p-10 rounded-2xl shadow-2xl shadow-gray-300/40 border border-gray-200/60 w-[400px]"
+        className="relative z-10 bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-200/80 w-full max-w-[400px] mx-4 my-8"
       >
-        <h1 className="text-4xl font-bold text-center text-indigo-600 mb-8">
-          Login
-        </h1>
+        <div className="text-center mb-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl tracking-tight">
+            CarRental
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+            Welcome Back
+          </h1>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">Sign in to your account</p>
+        </div>
 
         {/* email */}
         <input
@@ -65,40 +71,40 @@ const Login = () => {
           placeholder="Enter Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-300 p-4 rounded-xl mb-5 text-gray-900 placeholder-gray-400"
+          className="w-full bg-gray-50 border border-gray-300 p-3.5 rounded-xl mb-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
 
         {/* password */}
         <div className="relative mb-5">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-300 p-4 rounded-xl pr-12 text-gray-900 placeholder-gray-400"
-              required
-            />
-            <div
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
-            </div>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-300 p-3.5 rounded-xl pr-12 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+          <div
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEye /> : <FaEyeSlash />}
+          </div>
         </div>
 
         {/* button */}
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/25 font-semibold"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold text-sm sm:text-base transition cursor-pointer"
         >
-          Login
+          Sign In
         </button>
 
         {/* register link */}
-        <p className="mt-5 text-center text-gray-500">
+        <p className="mt-5 text-center text-xs sm:text-sm text-gray-500">
           Don't have an account?{" "}
-          <Link to="/register" className="text-indigo-600 font-bold hover:text-indigo-500">
+          <Link to="/register" className="text-indigo-600 font-bold hover:underline">
             Register
           </Link>
         </p>

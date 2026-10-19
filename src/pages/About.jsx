@@ -1,116 +1,31 @@
 // About.jsx
-
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-import {
-  FaCar,
-  FaShieldAlt,
-  FaUsers,
-  FaAward,
-  FaHome,
-  FaInfoCircle,
-  FaPhone,
-  FaSignOutAlt,
-} from "react-icons/fa";
-
-import {
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
-
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
-
-import { auth, db } from "../firebase/firebase";
+import React from "react";
+import { FaCar, FaShieldAlt, FaUsers, FaAward } from "react-icons/fa";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const About = () => {
-
-  const navigate = useNavigate();
-
-  const [userName, setUserName] = useState("");
-
-  /* ================= USER LOGIN ================= */
-
-  useEffect(() => {
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-
-      if (user) {
-
-        try {
-
-          const docRef = doc(db, "users", user.uid);
-
-          const docSnap = await getDoc(docRef);
-
-          setUserName(
-            docSnap.exists()
-              ? docSnap.data().userName || user.email
-              : user.email
-          );
-
-        } catch (error) {
-
-          console.log(error);
-
-          setUserName(user.email);
-
-        }
-
-      } else {
-
-        setUserName("");
-
-      }
-
-    });
-
-    return () => unsubscribe();
-
-  }, []);
-
-  /* ================= LOGOUT ================= */
-
-  const handleLogout = async () => {
-
-    try {
-
-      await signOut(auth);
-
-      navigate("/");
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-
-  };
-
   const stats = [
     {
-      icon: <FaCar className="text-indigo-600 text-4xl" />,
+      icon: <FaCar className="text-indigo-600 text-3xl sm:text-4xl" />,
       value: "500+",
       label: "Premium Vehicles",
       bg: "bg-indigo-50",
     },
     {
-      icon: <FaUsers className="text-green-600 text-4xl" />,
+      icon: <FaUsers className="text-emerald-600 text-3xl sm:text-4xl" />,
       value: "50,000+",
       label: "Happy Customers",
-      bg: "bg-indigo-50",
+      bg: "bg-emerald-50",
     },
     {
-      icon: <FaAward className="text-yellow-600 text-4xl" />,
+      icon: <FaAward className="text-amber-600 text-3xl sm:text-4xl" />,
       value: "15+",
       label: "Years Experience",
       bg: "bg-amber-50",
     },
     {
-      icon: <FaShieldAlt className="text-purple-600 text-4xl" />,
+      icon: <FaShieldAlt className="text-purple-600 text-3xl sm:text-4xl" />,
       value: "100%",
       label: "Insured Vehicles",
       bg: "bg-purple-50",
@@ -133,283 +48,102 @@ const About = () => {
   ];
 
   return (
-
-    <div className="bg-gray-50 min-h-screen">
-
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
       {/* ================= NAVBAR ================= */}
-
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center">
-
-        <div className="flex items-center gap-2">
-
-          <FaCar className="text-indigo-600 text-3xl" />
-
-          <h1 className="text-3xl font-bold text-gray-900">
-            CarRental
-          </h1>
-
-        </div>
-
-        <ul className="hidden md:flex gap-10 text-gray-600 text-lg items-center">
-
-          <Link
-            to="/"
-            className="flex items-center gap-2 hover:text-indigo-600"
-          >
-            <FaHome />
-            Home
-          </Link>
-
-          <Link
-            to="/cars"
-            className="flex items-center gap-2 hover:text-indigo-600"
-          >
-            <FaCar />
-            Cars
-          </Link>
-
-          <Link
-            to="/about"
-            className="flex items-center gap-2 text-indigo-600 font-semibold"
-          >
-            <FaInfoCircle />
-            About
-          </Link>
-
-          <Link
-            to="/contact"
-            className="flex items-center gap-2 hover:text-indigo-600"
-          >
-            <FaPhone />
-            Contact
-          </Link>
-
-        </ul>
-
-        <div className="flex items-center gap-5">
-
-          {userName ? (
-            <>
-
-              <button
-                onClick={handleLogout}
-                className="bg-gray-800 hover:bg-red-500/80 text-white px-5 py-2 rounded-lg flex items-center gap-2"
-              >
-                <FaSignOutAlt />
-                Logout
-              </button>
-
-            </>
-          ) : (
-            <>
-
-              <Link
-                to="/login"
-                className="text-indigo-600 text-xl font-semibold px-5 py-2 hover:text-indigo-500"
-              >
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:shadow-lg hover:shadow-indigo-500/25"
-              >
-                Register
-              </Link>
-
-            </>
-          )}
-
-        </div>
-
-      </nav>
+      <Navbar active="about" />
 
       {/* ================= HERO ================= */}
-
-      <section className="bg-gray-100 border-b border-gray-200 py-20 px-10 text-center">
-
-        <h1 className="text-6xl font-bold text-gray-900">
-          About CarRental
-        </h1>
-
-        <p className="text-gray-500 text-xl mt-6 max-w-4xl mx-auto leading-relaxed">
-          Your trusted partner in premium car rentals.
-          We provide high-quality vehicles, affordable pricing,
-          and excellent customer service.
-        </p>
-
+      <section className="bg-white border-b border-gray-200 py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-10 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+            About CarRental
+          </h1>
+          <p className="text-gray-500 text-base sm:text-lg md:text-xl mt-4 sm:mt-6 leading-relaxed">
+            Your trusted partner in premium car rentals. We provide high-quality vehicles, affordable pricing, and excellent customer service across Sri Lanka.
+          </p>
+        </div>
       </section>
 
       {/* ================= STATS ================= */}
-
-      <section className="py-16 px-10">
-
-        <div className="grid md:grid-cols-4 gap-8">
-
+      <section className="py-10 sm:py-16 px-4 sm:px-6 md:px-10 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {stats.map((stat, index) => (
-
             <div
               key={index}
-              className="bg-white shadow-lg rounded-2xl p-8 hover:shadow-xl transition duration-300 text-center"
+              className="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 sm:p-8 hover:shadow-md transition text-center flex flex-col items-center"
             >
-
-              <div className={`w-24 h-24 ${stat.bg} rounded-full flex items-center justify-center mx-auto mb-5`}>
+              <div className={`w-16 h-16 sm:w-20 sm:h-20 ${stat.bg} rounded-2xl flex items-center justify-center mb-4`}>
                 {stat.icon}
               </div>
-
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 {stat.value}
               </h2>
-
-              <p className="text-gray-500 mt-2">
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 font-medium">
                 {stat.label}
               </p>
-
             </div>
-
           ))}
-
         </div>
-
       </section>
 
       {/* ================= STORY ================= */}
-
-      <section className="px-10 py-10">
-
-        <div className="bg-white shadow-lg rounded-2xl p-10">
-
-          <h2 className="text-4xl font-bold mb-6 text-gray-900">
+      <section className="px-4 sm:px-6 md:px-10 py-6 max-w-7xl mx-auto w-full">
+        <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 sm:p-10">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-900">
             Our Story
           </h2>
-
-          <p className="text-gray-500 text-lg leading-relaxed mb-5">
-            Founded in 2011, CarRental started with a simple vision:
-            to make premium car rentals affordable and accessible
-            for everyone.
-          </p>
-
-          <p className="text-gray-500 text-lg leading-relaxed mb-5">
-            Today, we proudly serve thousands of customers with
-            a wide range of vehicles including economy cars,
-            luxury sedans, SUVs, and family vehicles.
-          </p>
-
-          <p className="text-gray-500 text-lg leading-relaxed">
-            We continue to grow by maintaining our commitment
-            to transparency, customer satisfaction, and safety.
-          </p>
-
+          <div className="space-y-4 text-gray-600 text-sm sm:text-base leading-relaxed">
+            <p>
+              Founded in 2011, CarRental started with a simple vision: to make premium car rentals affordable and accessible for everyone.
+            </p>
+            <p>
+              Today, we proudly serve thousands of customers with a wide range of vehicles including economy cars, luxury sedans, SUVs, and family vehicles.
+            </p>
+            <p>
+              We continue to grow by maintaining our commitment to transparency, customer satisfaction, and safety on every journey.
+            </p>
+          </div>
         </div>
-
       </section>
 
       {/* ================= MISSION ================= */}
-
-      <section className="px-10 py-10">
-
-        <div className="bg-indigo-600 text-white rounded-2xl p-12 text-center shadow-lg">
-
-          <h2 className="text-4xl font-bold mb-5">
+      <section className="px-4 sm:px-6 md:px-10 py-6 max-w-7xl mx-auto w-full">
+        <div className="bg-indigo-600 text-white rounded-2xl p-8 sm:p-12 text-center shadow-md">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">
             Our Mission
           </h2>
-
-          <p className="text-2xl leading-relaxed max-w-4xl mx-auto">
-            To provide exceptional car rental experiences through
-            reliable vehicles, transparent pricing, and world-class service.
+          <p className="text-base sm:text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto font-medium text-indigo-100">
+            To provide exceptional car rental experiences through reliable vehicles, transparent pricing, and world-class service.
           </p>
-
         </div>
-
       </section>
 
       {/* ================= VALUES ================= */}
-
-      <section className="px-10 py-16">
-
-        <div className="grid md:grid-cols-3 gap-8">
-
+      <section className="px-4 sm:px-6 md:px-10 py-10 sm:py-16 max-w-7xl mx-auto w-full">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-gray-900">
+          Our Core Values
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {values.map((value, index) => (
-
             <div
               key={index}
-              className="bg-white shadow-lg rounded-2xl p-8 hover:shadow-xl transition"
+              className="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 sm:p-8 hover:shadow-md transition"
             >
-
-              <h3 className="text-3xl font-bold mb-4 text-gray-900">
+              <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-900">
                 {value.title}
               </h3>
-
-              <p className="text-gray-500 text-lg leading-relaxed">
+              <p className="text-gray-500 text-sm leading-relaxed">
                 {value.desc}
               </p>
-
             </div>
-
           ))}
-
         </div>
-
       </section>
 
       {/* ================= FOOTER ================= */}
-
-      <footer className="bg-gray-900 text-white py-12 px-10">
-
-        <div className="grid md:grid-cols-3 gap-10">
-
-          <div>
-
-            <h2 className="text-2xl font-bold mb-4">
-              CarRental
-            </h2>
-
-            <p className="text-gray-400">
-              Your trusted partner for car rentals.
-            </p>
-
-          </div>
-
-          <div>
-
-            <h2 className="text-2xl font-bold mb-4">
-              Contact Us
-            </h2>
-
-            <p>Email: info@carrental.com</p>
-
-            <p>Phone: +94 77 123 4567</p>
-
-          </div>
-
-          <div>
-
-            <h2 className="text-2xl font-bold mb-4">
-              Follow Us
-            </h2>
-
-            <div className="flex gap-5">
-              <p>Facebook</p>
-              <p>Twitter</p>
-              <p>Instagram</p>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="border-t border-gray-200 my-8"></div>
-
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-
-      </footer>
-
+      <Footer />
     </div>
-
   );
-
 };
 
 export default About;

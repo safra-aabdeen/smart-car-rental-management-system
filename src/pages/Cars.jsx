@@ -1,68 +1,36 @@
 import React, { useEffect, useState } from "react";
 import {
-  FaCar, FaHome, FaPhone, FaInfoCircle, FaFilter, FaStar,
-  FaUsers, FaCrown, FaMoneyBill, FaSignOutAlt,
+  FaCar, FaFilter, FaStar,
+  FaUsers, FaCrown, FaMoneyBill, FaChevronDown, FaChevronUp
 } from "react-icons/fa";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { db, auth } from "../firebase/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 import localCars from "../data/Cars";
 import getCarImage from "../utils/carImage";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Cars = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [userName, setUserName] = useState("");
-  const [cars, setCars] = useState([]); // ✅ state add panniten
+  const [cars, setCars] = useState([]);
   const [carType, setCarType] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [capacity, setCapacity] = useState("");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-
-  /* ================= LOGIN USER ================= */
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-          setUserName(docSnap.exists()? docSnap.data().userName || user.email : user.email);
-        } catch (error) {
-          console.log(error);
-          setUserName(user.email);
-        }
-      } else {
-        setUserName("");
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   /* ================= READ SEARCH PARAMS FROM HOME ================= */
   useEffect(() => {
     const typeParam = searchParams.get("type");
-    const locationParam = searchParams.get("location");
     const capacityParam = searchParams.get("capacity");
 
     if (typeParam) setCarType(typeParam);
     if (capacityParam) setCapacity(capacityParam);
-
-    // Location filter vena na unoda cars la 'location' field irukkanum
-    // if (locationParam) setLocation(locationParam);
   }, [searchParams]);
-
-  /* ================= LOGOUT ================= */
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   /* ================= FIREBASE FETCH ================= */
   useEffect(() => {
@@ -71,117 +39,88 @@ const Cars = () => {
         const querySnapshot = await getDocs(collection(db, "cars"));
         const carData = [];
         querySnapshot.forEach((doc) => {
-          carData.push({ id: doc.id,...doc.data() });
+          carData.push({ id: doc.id, ...doc.data() });
         });
-        const sortedCars = carData.sort(
-       (a, b) => Number(a.carId) - Number(b.carId)
-        );
+        carData.sort((a, b) => Number(a.carId) - Number(b.carId));
         setCars(carData);
       } catch (error) {
         console.log("Firebase error, using local data:", error);
-        setCars(localCars); // fallback
+        setCars(localCars);
       }
     };
     fetchCars();
   }, []);
 
-  const allCars = cars.length > 0? cars : localCars;
+  const allCars = cars.length > 0 ? cars : localCars;
 
   /* ================= FILTER ================= */
-const filteredCars = allCars.filter((car) => {
-  const matchesType = !carType || car.type === carType;
+  const filteredCars = allCars.filter((car) => {
+    const matchesType = !carType || car.type === carType;
+    const price = Number(car.price || 0);
+    const seats = Number(car.seats || 0);
+    const matchesMaxPrice = !maxPrice || price <= Number(maxPrice);
+    const matchesMinPrice = !minPrice || price >= Number(minPrice);
+    const matchesCapacity = !capacity || seats === Number(capacity);
+    const matchesAvailability = !onlyAvailable || car.status === "Available";
 
-  const price = Number(car.price || 0);
-  const seats = Number(car.seats || 0);
-
-  const matchesMaxPrice =
-    !maxPrice || price <= Number(maxPrice);
-
-  const matchesMinPrice =
-    !minPrice || price >= Number(minPrice);
-
-  const matchesCapacity =
-    !capacity || seats === Number(capacity);
-
-  const matchesAvailability =
-    !onlyAvailable || car.status === "Available";
-
-  return (
-    matchesType &&
-    matchesMaxPrice &&
-    matchesMinPrice &&
-    matchesCapacity &&
-    matchesAvailability
-  );
-});
+    return (
+      matchesType &&
+      matchesMaxPrice &&
+      matchesMinPrice &&
+      matchesCapacity &&
+      matchesAvailability
+    );
+  });
 
   return (
-    <div className="bg-gray-50 max-h-screen">
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
 
       {/* ================= NAVBAR ================= */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <FaCar className="text-indigo-600 text-3xl" />
-          <h1 className="text-3xl font-bold text-gray-900">CarRental</h1>
-        </div>
-
-        <ul className="hidden md:flex gap-10 text-gray-700 text-lg items-center">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600"><FaHome /> Home</Link>
-          <Link to="/cars" className="flex items-center gap-2 text-indigo-600 font-semibold"><FaCar /> Cars</Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600"><FaInfoCircle /> About</Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600"><FaPhone /> Contact</Link>
-        </ul>
-
-        <div className="flex items-center gap-5">
-          {userName? (
-            <>
-              <button onClick={handleLogout} className="bg-gray-700 hover:bg-red-600 text-white px-5 py-2 rounded-lg flex items-center gap-2">
-                <FaSignOutAlt /> Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="text-indigo-600 text-xl font-semibold px-5 py-2 hover:text-indigo-700">Login</Link>
-              <Link to="/register" className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">Register</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar active="cars" />
 
       {/* ================= PAGE TITLE ================= */}
-      <div className="px-10 pt-10">
-        <h1 className="text-5xl font-bold text-gray-900">Available Cars</h1>
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-10 pt-6 sm:pt-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">Available Cars</h1>
         {(carType || maxPrice || minPrice || capacity) && (
-          <p className="text-gray-500 mt-2">Filters applied from search</p>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">Filters applied from search</p>
         )}
       </div>
 
       {/* ================= SMART RECOMMENDATION ================= */}
-      <section className="px-10 mt-10">
-        <div className="bg-white shadow-lg rounded-2xl p-8">
-          <h2 className="text-3xl font-bold mb-3 text-gray-900">Find the Perfect Car for Your Trip</h2>
-          <p className="text-gray-500 mb-8">Choose from our wide range of cars and book with ease.</p>
-          <div className="grid md:grid-cols-4 gap-5">
-            <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl">
-              <h3 className="font-bold text-lg flex items-center gap-2 text-gray-900"> Smart Recommendation</h3>
-              <p className="text-gray-500 mt-2 text-sm">Based on your selection, we recommend suitable cars.</p>
+      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-10 mt-6 sm:mt-8">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-7">
+          <h2 className="text-xl sm:text-2xl font-bold mb-1 text-gray-900">Find the Perfect Car for Your Trip</h2>
+          <p className="text-gray-500 text-xs sm:text-sm mb-5">Choose from our wide range of cars and book with ease.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="bg-indigo-50/70 border border-indigo-100 p-4 rounded-xl">
+              <h3 className="font-bold text-sm sm:text-base flex items-center gap-2 text-gray-900"> Smart Recommendation</h3>
+              <p className="text-gray-500 mt-1 text-xs">Based on your selection, we recommend suitable cars.</p>
             </div>
-            <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl">
+            <div className="bg-indigo-50/70 border border-indigo-100 p-4 rounded-xl">
               <div className="flex items-center gap-3">
-                <FaUsers className="text-indigo-600 text-2xl" />
-                <div><h3 className="font-bold text-gray-900">Family Trip SUV</h3><p className="text-sm text-indigo-600">Recommended</p></div>
+                <FaUsers className="text-indigo-600 text-xl shrink-0" />
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-gray-900">Family Trip SUV</h3>
+                  <p className="text-xs text-indigo-600 font-medium">Recommended</p>
+                </div>
               </div>
             </div>
-            <div className="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+            <div className="bg-amber-50/70 border border-amber-100 p-4 rounded-xl">
               <div className="flex items-center gap-3">
-                <FaMoneyBill className="text-yellow-600 text-2xl" />
-                <div><h3 className="font-bold text-gray-900">Budget Travel</h3><p className="text-sm text-yellow-600">Economy Car</p></div>
+                <FaMoneyBill className="text-yellow-600 text-xl shrink-0" />
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-gray-900">Budget Travel</h3>
+                  <p className="text-xs text-yellow-600 font-medium">Economy Car</p>
+                </div>
               </div>
             </div>
-            <div className="bg-purple-50 border border-purple-200 p-5 rounded-2xl">
+            <div className="bg-purple-50/70 border border-purple-100 p-4 rounded-xl">
               <div className="flex items-center gap-3">
-                <FaCrown className="text-purple-600 text-2xl" />
-                <div><h3 className="font-bold text-gray-900">Luxury Travel</h3><p className="text-sm text-purple-600">Premium Car</p></div>
+                <FaCrown className="text-purple-600 text-xl shrink-0" />
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-gray-900">Luxury Travel</h3>
+                  <p className="text-xs text-purple-600 font-medium">Premium Car</p>
+                </div>
               </div>
             </div>
           </div>
@@ -189,157 +128,203 @@ const filteredCars = allCars.filter((car) => {
       </section>
 
       {/* ================= MAIN SECTION ================= */}
-      <div className="grid md:grid-cols-4 gap-8 px-10 py-10 items-start">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-10 py-6 sm:py-10">
 
-        {/* FILTER - STICKY */}
-        <div className="bg-white shadow-lg rounded-2xl p-6 sticky top-24 h-fit">
-          <div className="flex items-center gap-2 mb-6 text-gray-900">
-            <FaFilter />
-            <h2 className="text-2xl font-bold">Filters</h2>
-          </div>
+        {/* MOBILE FILTER TOGGLE BUTTON */}
+        <button
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+          className="lg:hidden w-full bg-white border border-gray-200 shadow-sm px-4 py-3 rounded-xl flex items-center justify-between font-semibold text-gray-800 text-sm mb-6 cursor-pointer"
+        >
+          <span className="flex items-center gap-2">
+            <FaFilter className="text-indigo-600" />
+            <span>Filter Cars</span>
+            {(carType || maxPrice || minPrice || capacity || onlyAvailable) && (
+              <span className="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">Active</span>
+            )}
+          </span>
+          {showMobileFilters ? <FaChevronUp className="text-gray-400" /> : <FaChevronDown className="text-gray-400" />}
+        </button>
 
-          <div className="mb-5">
-            <label className="font-semibold text-gray-600 block mb-2">Car Type</label>
-            <select value={carType} onChange={(e) => setCarType(e.target.value)} className="w-full bg-white border border-gray-300 p-3 rounded-xl text-gray-900">
-              <option value="">All Types</option>
-              <option value="SUV">SUV</option>
-              <option value="Sedan">Sedan</option>
-              <option value="Luxury">Luxury</option>
-              <option value="Economy">Economy</option>
-              <option value="Family">Family</option>
-            </select>
-          </div>
-
-          <div className="mb-5">
-            <label className="font-semibold text-gray-600 block mb-2">Max Price</label>
-            <input type="number" placeholder="0" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-full bg-white border border-gray-300 p-3 rounded-xl text-gray-900" />
-          </div>
-
-          <div className="mb-5">
-            <label className="font-semibold text-gray-600 block mb-2">Min Price</label>
-            <input type="number" placeholder="200" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className="w-full bg-white border border-gray-300 p-3 rounded-xl text-gray-900" />
-          </div>
-
-          <div className="mb-5">
-            <label className="font-semibold text-gray-600 block mb-2">Passenger Capacity</label>
-            <select value={capacity} onChange={(e) => setCapacity(e.target.value)} className="w-full bg-white border border-gray-300 p-3 rounded-xl text-gray-900">
-              <option value="">Select Seats</option>
-              <option value="4">4 Seats</option>
-              <option value="5">5 Seats</option>
-              <option value="7">7 Seats</option>
-              <option value="8">8 Seats</option>
-            </select>
-          </div>
-
-          <div className="mb-5 flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={onlyAvailable}
-              onChange={(e) => setOnlyAvailable(e.target.checked)}
-              className="w-4 h-4"
-            />
-             <label className="font-semibold text-gray-600">Only Available Cars</label>
-          </div>
-
-          <button
-            onClick={() => {
-              setCarType("");
-              setMaxPrice("");
-              setMinPrice("");
-              setCapacity("");
-              setOnlyAvailable(false);
-              navigate("/cars"); // URL la irunthu params ah remove pannum
-            }}
-            className="w-full bg-indigo-600 hover:bg-red-600 text-white py-3 rounded-lg mt-4"
-          >
-            Reset Filters
-          </button>
-        </div>
-
-        {/* CARDS - SCROLL ONLY THIS */}
-        <div className="md:col-span-3">
-          {filteredCars.length === 0? (
-            <div className="bg-white shadow-lg rounded-2xl p-10 text-center">
-              <h3 className="text-2xl font-bold text-gray-900">No Cars Found</h3>
-              <p className="text-gray-500 mt-2">Try adjusting your filters</p>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8 items-start">
+          {/* FILTER - STICKY */}
+          <div className={`bg-white shadow-sm border border-gray-200 rounded-2xl p-5 lg:sticky lg:top-24 h-fit ${
+            showMobileFilters ? "block mb-4 lg:mb-0" : "hidden lg:block"
+          }`}>
+            <div className="flex items-center justify-between mb-5 text-gray-900">
+              <div className="flex items-center gap-2">
+                <FaFilter className="text-indigo-600 text-sm" />
+                <h2 className="text-lg font-bold">Filters</h2>
+              </div>
+              {(carType || maxPrice || minPrice || capacity || onlyAvailable) && (
+                <button
+                  onClick={() => {
+                    setCarType("");
+                    setMaxPrice("");
+                    setMinPrice("");
+                    setCapacity("");
+                    setOnlyAvailable(false);
+                    navigate("/cars");
+                  }}
+                  className="text-xs text-red-600 hover:underline font-semibold"
+                >
+                  Clear all
+                </button>
+              )}
             </div>
-          ) : (
-            <div className="grid md:grid-cols-3 gap-8">
-              {filteredCars.map((car) => (
-                <div key={car.id} className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-300 transition duration-300 hover:-translate-y-2">
-                  <img
-                    src={getCarImage(car)}
-                    alt={car.name}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/images/Home-image.jpg";
-                    }}
-                    className="h-56 w-full object-cover"
-                  />
-                  <div className="p-5">
-                    <div className="flex justify-between items-center">
-                      <h2 className="text-2xl font-bold text-gray-900">{car.name}</h2>
-                      <div className="flex items-center gap-1 text-yellow-500"><FaStar /> {car.rating}</div>
+
+            <div className="mb-4">
+              <label className="text-xs font-semibold text-gray-600 block mb-1.5">Car Type</label>
+              <select
+                value={carType}
+                onChange={(e) => setCarType(e.target.value)}
+                className="w-full bg-white border border-gray-200 p-2.5 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">All Types</option>
+                <option value="SUV">SUV</option>
+                <option value="Sedan">Sedan</option>
+                <option value="Luxury">Luxury</option>
+                <option value="Economy">Economy</option>
+                <option value="Family">Family</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-0">
+              <div className="mb-4">
+                <label className="text-xs font-semibold text-gray-600 block mb-1.5">Min Price (Rs.)</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 5000"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  className="w-full bg-white border border-gray-200 p-2.5 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="text-xs font-semibold text-gray-600 block mb-1.5">Max Price (Rs.)</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 25000"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  className="w-full bg-white border border-gray-200 p-2.5 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="text-xs font-semibold text-gray-600 block mb-1.5">Passenger Capacity</label>
+              <select
+                value={capacity}
+                onChange={(e) => setCapacity(e.target.value)}
+                className="w-full bg-white border border-gray-200 p-2.5 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">Any Capacity</option>
+                <option value="4">4 Seats</option>
+                <option value="5">5 Seats</option>
+                <option value="7">7 Seats</option>
+                <option value="8">8 Seats</option>
+              </select>
+            </div>
+
+            <div className="mb-5 flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="availOnly"
+                checked={onlyAvailable}
+                onChange={(e) => setOnlyAvailable(e.target.checked)}
+                className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 cursor-pointer"
+              />
+              <label htmlFor="availOnly" className="text-xs font-semibold text-gray-700 cursor-pointer">
+                Only Available Cars
+              </label>
+            </div>
+
+            <button
+              onClick={() => {
+                setCarType("");
+                setMaxPrice("");
+                setMinPrice("");
+                setCapacity("");
+                setOnlyAvailable(false);
+                navigate("/cars");
+              }}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-semibold transition"
+            >
+              Reset Filters
+            </button>
+          </div>
+
+          {/* CARS GRID */}
+          <div className="lg:col-span-3">
+            {filteredCars.length === 0 ? (
+              <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-10 text-center">
+                <FaCar className="text-4xl text-gray-300 mx-auto mb-3" />
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">No Cars Found</h3>
+                <p className="text-gray-500 text-xs sm:text-sm mt-1">Try adjusting your filters or price range</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
+                {filteredCars.map((car) => (
+                  <div
+                    key={car.id}
+                    className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition duration-200 flex flex-col justify-between"
+                  >
+                    <div className="h-48 sm:h-52 w-full overflow-hidden bg-gray-100">
+                      <img
+                        src={getCarImage(car)}
+                        alt={car.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/images/Home-image.jpg";
+                        }}
+                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
                     </div>
-                    <p className="text-indigo-600 text-3xl font-bold mt-2">Rs.{car.price}/day</p>
-                    <div className="mt-4 text-gray-500 space-y-1">
-                    <p>Type: {car.type}</p>
-
-                     <p className="flex items-center gap-2">
-                     <FaUsers /> Seats: {car.seats || 4}
-                     </p>
-
-                    <p>Fuel: {car.fuelType || "Petrol"}</p>
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-center gap-2">
+                          <h2 className="text-base sm:text-lg font-bold text-gray-900 truncate">{car.name}</h2>
+                          <div className="flex items-center gap-1 text-yellow-500 text-xs font-semibold shrink-0">
+                            <FaStar /> {car.rating || "4.5"}
+                          </div>
+                        </div>
+                        <p className="text-indigo-600 text-xl font-bold mt-1">
+                          Rs.{car.price}<span className="text-xs text-gray-400 font-normal">/day</span>
+                        </p>
+                        <div className="mt-3 text-xs text-gray-500 space-y-1">
+                          <p>Type: <span className="font-medium text-gray-700">{car.type}</span></p>
+                          <p className="flex items-center gap-1.5">
+                            <FaUsers className="text-gray-400" /> Seats: <span className="font-medium text-gray-700">{car.seats || 4}</span>
+                          </p>
+                          <p>Fuel: <span className="font-medium text-gray-700">{car.fuelType || "Petrol"}</span></p>
+                        </div>
+                        <p
+                          className={`mt-3 text-xs font-bold inline-block px-2.5 py-1 rounded-full ${
+                            car.status === "Available"
+                              ? "bg-green-50 text-green-700"
+                              : "bg-red-50 text-red-600"
+                          }`}
+                        >
+                          {car.status || "Available"}
+                        </p>
+                      </div>
+                      <Link to={`/car/${car.id}`} className="mt-4">
+                        <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-xs sm:text-sm transition shadow-sm">
+                          View Details
+                        </button>
+                      </Link>
                     </div>
-
-                    <p
-                     className={`mt-4 font-bold ${
-                      car.status === "Available"
-                     ? "text-green-600"
-                        : "text-red-600"
-                       }`}
-                    >
-                    {car.status || "Available"}
-                    </p>
-                    <Link to={`/car/${car.id}`}>
-                      <button className="w-full mt-5 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700">
-                        View Details
-                      </button>
-                    </Link>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-gray-900 border-t border-gray-200 text-white py-12 px-10">
-        <div className="grid md:grid-cols-3 gap-10">
-          <div>
-            <h2 className="text-2xl font-bold mb-4">CarRental</h2>
-            <p className="text-gray-400">Your trusted partner for car rentals.</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-            <p>Email: info@carrental.com</p>
-            <p>Phone: +94 77 123 4567</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Follow Us</h2>
-            <div className="flex gap-5">
-              <p>Facebook</p>
-              <p>Twitter</p>
-              <p>Instagram</p>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-300 my-8"></div>
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

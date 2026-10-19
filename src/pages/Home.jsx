@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { FaCar, FaHome, FaPhone, FaInfoCircle, FaSearch, FaStar } from "react-icons/fa";
+import { FaCar, FaSearch, FaStar } from "react-icons/fa";
 import homeImg from "../images/Home-image.jpg";
 import localCars from "../data/Cars";
 import getCarImage from "../utils/carImage";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const [popupImg, setPopupImg] = useState(null);
@@ -23,18 +25,17 @@ const Home = () => {
         const querySnapshot = await getDocs(collection(db, "cars"));
         const carData = [];
         querySnapshot.forEach((doc) => {
-          carData.push({ id: doc.id,...doc.data() });
+          carData.push({ id: doc.id, ...doc.data() });
         });
-        // Firebase la image iruntha atha use pannum, illa na local cars use pannum
         const sortedCars = carData.sort(
-        (a, b) => Number(a.carId) - Number(b.carId)
+          (a, b) => Number(a.carId) - Number(b.carId)
         );
 
-        // First 3 cars by carId order
         setFeaturedCars(
-        sortedCars.length > 0
-        ? sortedCars.slice(0, 3)
-        : localCars.slice(0, 3));
+          sortedCars.length > 0
+            ? sortedCars.slice(0, 3)
+            : localCars.slice(0, 3)
+        );
       } catch (error) {
         console.log("Using local cars:", error);
         setFeaturedCars(localCars.slice(0, 3));
@@ -59,43 +60,33 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
 
       {/* NAVBAR */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <FaCar className="text-indigo-600 text-2xl" />
-          <h1 className="text-2xl font-bold text-gray-900">CarRental</h1>
-        </div>
-
-        <ul className="hidden md:flex gap-8 text-gray-600 font-medium">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600"><FaHome /> Home</Link>
-          <Link to="/cars" className="flex items-center gap-2 hover:text-indigo-600"><FaCar /> Cars</Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600"><FaInfoCircle /> About</Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600"><FaPhone /> Contact</Link>
-        </ul>
-
-        <div className="flex gap-4">
-          <Link to="/login" className="text-indigo-600 text-xl font-semibold px-5 py-2 hover:text-indigo-500">Login</Link>
-          <Link to="/register" className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:shadow-lg hover:shadow-indigo-500/25">Register</Link>
-        </div>
-      </nav>
+      <Navbar active="home" />
 
       {/* HERO + SEARCH BAR */}
-      <section className="relative h-[500px] bg-cover bg-center flex items-center" style={{ backgroundImage: `url(${homeImg})` }}>
+      <section
+        className="relative min-h-[500px] md:min-h-[540px] bg-cover bg-center flex items-center py-12 md:py-16"
+        style={{ backgroundImage: `url(${homeImg})` }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
 
-        <div className="relative z-10 px-10 text-white w-full">
-          <h1 className="text-5xl md:text-6xl font-bold">Find Your Perfect Ride</h1>
-          <p className="mt-4 text-xl">Premium cars at affordable prices</p>
+        <div className="relative z-10 px-4 sm:px-6 md:px-10 max-w-7xl mx-auto text-white w-full">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+            Find Your Perfect Ride
+          </h1>
+          <p className="mt-3 text-base sm:text-lg md:text-xl text-gray-200">
+            Premium cars at affordable prices
+          </p>
 
-          <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 mt-10 shadow-lg grid md:grid-cols-5 gap-4">
-
+          <div className="bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl p-4 sm:p-6 mt-8 shadow-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
             <input
               type="date"
               value={pickupDate}
               onChange={(e) => setPickupDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-gray-900 placeholder-gray-400 w-full"
+              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
 
             <input
@@ -103,23 +94,23 @@ const Home = () => {
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}
               min={pickupDate || new Date().toISOString().split("T")[0]}
-              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-gray-900 placeholder-gray-400 w-full"
+              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
 
             <input
               type="text"
-              placeholder="Location"
+              placeholder="Pickup Location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-gray-900 placeholder-gray-400 w-full"
+              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
 
             <select
               value={carType}
               onChange={(e) => setCarType(e.target.value)}
-              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-gray-900 placeholder-gray-400 w-full text-gray-500"
+              className="bg-gray-50 border border-gray-300 p-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="">Car Type</option>
+              <option value="">All Car Types</option>
               <option value="SUV">SUV</option>
               <option value="Sedan">Sedan</option>
               <option value="Luxury">Luxury</option>
@@ -129,111 +120,104 @@ const Home = () => {
 
             <button
               onClick={handleSearch}
-              className="bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-3 hover:shadow-lg hover:shadow-indigo-500/25"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-sm shadow-md transition sm:col-span-2 lg:col-span-1"
             >
-              <FaSearch /> Search
+              <FaSearch className="text-xs" /> Search Cars
             </button>
-
           </div>
         </div>
       </section>
 
-      {/* FEATURED CARS - Images irukkum */}
-      <section className="py-20 px-10 bg-gray-100">
-        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Featured Cars</h2>
+      {/* FEATURED CARS */}
+      <section className="py-12 sm:py-16 px-4 sm:px-6 md:px-10 max-w-7xl mx-auto w-full">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-gray-900">
+          Featured Cars
+        </h2>
 
-        {featuredCars.length === 0? (
-          <p className="text-center text-gray-500">Loading cars...</p>
+        {featuredCars.length === 0 ? (
+          <p className="text-center text-gray-400 py-8 text-sm">Loading cars...</p>
         ) : (
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {featuredCars.map((car) => {
               const carImg = getCarImage(car);
               return (
-                <div key={car.id} className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition">
-                  <img
-                    src={carImg}
-                    alt={car.name}
-                    onClick={() => setPopupImg(carImg)}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/images/Home-image.jpg";
-                    }}
-                    className="h-60 w-full object-cover cursor-pointer transition-transform duration-300 hover:scale-110"
-                  />
-
-                <div className="p-5">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-2xl font-bold text-gray-900">{car.name}</h3>
-                    <div className="flex items-center gap-1 text-yellow-500">
-                      <FaStar />{car.rating || "4.5"}
-                    </div>
+                <div key={car.id} className="bg-white shadow-md border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition duration-300 flex flex-col">
+                  <div className="h-52 sm:h-56 w-full overflow-hidden bg-gray-100">
+                    <img
+                      src={carImg}
+                      alt={car.name}
+                      onClick={() => setPopupImg(carImg)}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/images/Home-image.jpg";
+                      }}
+                      className="h-full w-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105"
+                    />
                   </div>
 
-                  <p className="text-indigo-600 text-2xl font-bold mt-3">Rs.{car.price}/day</p>
+                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-center gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{car.name}</h3>
+                        <div className="flex items-center gap-1 text-yellow-500 text-sm font-semibold shrink-0">
+                          <FaStar className="text-xs" /> {car.rating || "4.5"}
+                        </div>
+                      </div>
 
-                  <Link to={`/car/${car.id}`}>
-                    <button className="w-full mt-5 bg-indigo-600 text-white py-3 rounded-lg hover:shadow-lg hover:shadow-indigo-500/25">
-                      View Details
-                    </button>
-                  </Link>
+                      <p className="text-indigo-600 text-xl sm:text-2xl font-bold mt-2">
+                        Rs.{car.price}<span className="text-xs text-gray-400 font-normal">/day</span>
+                      </p>
+                    </div>
+
+                    <Link to={`/car/${car.id}`} className="mt-4">
+                      <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow-sm">
+                        View Details
+                      </button>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
           </div>
         )}
       </section>
 
       {/* REVIEWS */}
-      <section className="py-20 px-10 bg-gray-100">
-        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">What Our Customers Say</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {reviews.map((r, i) => (
-            <div key={i} className="bg-white shadow-lg p-8 rounded-2xl">
-              <div className="text-yellow-500 mb-4">⭐⭐⭐⭐⭐</div>
-              <p className="text-gray-500">{r.text}</p>
-              <h4 className="mt-5 font-bold text-gray-900">- {r.name}</h4>
-            </div>
-          ))}
+      <section className="py-12 sm:py-16 px-4 sm:px-6 md:px-10 bg-gray-100/70">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-gray-900">
+            What Our Customers Say
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map((r, i) => (
+              <div key={i} className="bg-white shadow-sm border border-gray-100 p-6 rounded-2xl flex flex-col justify-between">
+                <div>
+                  <div className="text-yellow-400 text-sm mb-3">⭐⭐⭐⭐⭐</div>
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed">"{r.text}"</p>
+                </div>
+                <h4 className="mt-4 font-bold text-sm text-gray-900">- {r.name}</h4>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* POPUP IMAGE */}
       {popupImg && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={() => setPopupImg(null)}>
-          <img src={popupImg} className="max-w-4xl max-h- rounded-lg shadow-xl" alt="popup" />
+        <div
+          className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setPopupImg(null)}
+        >
+          <img
+            src={popupImg}
+            className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+            alt="Car preview"
+          />
         </div>
       )}
 
       {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-12 px-10">
-        <div className="grid md:grid-cols-3 gap-10">
-          <div>
-            <h2 className="text-2xl font-bold mb-4">CarRental</h2>
-            <p className="text-gray-400">Your trusted partner for car rentals.</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-            <p>Email: info@carrental.com</p>
-            <p>Phone: +94 77 123 4567</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Follow Us</h2>
-            <div className="flex gap-5">
-              <p>Facebook</p>
-              <p>Twitter</p>
-              <p>Instagram</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-200 my-8"></div>
-
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-        
-      </footer>
+      <Footer />
 
     </div>
   );

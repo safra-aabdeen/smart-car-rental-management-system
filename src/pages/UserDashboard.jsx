@@ -17,6 +17,8 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { db, auth } from "../firebase/firebase";
 import getBackendUrl from "../utils/backendUrl";
 import getCarImage from "../utils/carImage";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
   FaCar,
   FaHome,
@@ -388,146 +390,119 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-hidden">
       {/* NAVBAR */}
-      <nav className="bg-white shadow-md px-10 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <FaCar className="text-3xl text-indigo-600" />
-          <h1 className="text-3xl font-bold text-gray-900">CarRental</h1>
-        </div>
-        <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
-          <Link to="/" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaHome /> Home
-          </Link>
-          <Link to="/cars" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaCar /> Cars
-          </Link>
-          <Link to="/about" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaInfoCircle /> About
-          </Link>
-          <Link to="/contact" className="flex items-center gap-2 hover:text-indigo-600 transition">
-            <FaPhone /> Contact
-          </Link>
-        </div>
-        <div className="flex items-center gap-5">
-          <button
-            onClick={handleLogout}
-            className="bg-gray-700 hover:bg-red-600 border border-gray-300 px-5 py-2 rounded-lg text-white flex items-center gap-2 transition"
-          >
-            <FaSignOutAlt /> Logout
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* CONTENT */}
-      <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">My Dashboard</h1>
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-10 py-6 sm:py-10">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 tracking-tight">My Dashboard</h1>
 
         {/* PROFILE CARD */}
-        <div className="bg-white shadow-lg border border-gray-200 rounded-2xl shadow-sm p-8 mb-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-5 sm:p-7 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-md shrink-0">
               {userName ? userName.charAt(0).toUpperCase() : "U"}
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900">{userName}</h2>
-              <div className="flex flex-wrap gap-4 mt-2 text-gray-500">
-                <span className="flex items-center gap-2">
-                  <FaEnvelope className="text-indigo-600" /> {userEmail}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{userName}</h2>
+              <div className="flex flex-wrap gap-2.5 sm:gap-4 mt-2 text-xs sm:text-sm text-gray-500">
+                <span className="flex items-center gap-1.5">
+                  <FaEnvelope className="text-indigo-600 shrink-0 text-xs" /> <span className="truncate">{userEmail}</span>
                 </span>
-                <span className="flex items-center gap-2">
-                  <FaClock className="text-indigo-600" /> Member since {userCreated}
+                <span className="flex items-center gap-1.5">
+                  <FaClock className="text-indigo-600 shrink-0 text-xs" /> Member since {userCreated}
                 </span>
-                <span className="flex items-center gap-2 text-indigo-600 font-semibold bg-indigo-50 px-3 py-1 rounded-lg">
-                  <FaWallet className="text-indigo-600" /> Wallet Balance: LKR {walletBalance.toLocaleString()}
+                <span className="flex items-center gap-1.5 text-indigo-700 font-semibold bg-indigo-50 px-2.5 py-1 rounded-lg">
+                  <FaWallet className="text-indigo-600 text-xs" /> Balance: LKR {walletBalance.toLocaleString()}
                 </span>
               </div>
             </div>
             <Link
               to="/cars"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition"
+              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm"
             >
-              <FaCarSide /> Book a Car
+              <FaCarSide className="text-xs" /> Book a Car
             </Link>
           </div>
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white shadow-lg border border-gray-200 rounded-2xl shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <FaClipboardList className="text-blue-400" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+          <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-4 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                <FaClipboardList className="text-blue-500 text-xs sm:text-sm" />
               </div>
-              <span className="text-gray-500 text-sm font-medium">Total Bookings</span>
+              <span className="text-gray-500 text-xs font-medium truncate">Total Bookings</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{totalBookings}</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">{totalBookings}</p>
           </div>
-          <div className="bg-white shadow-lg border border-gray-200 rounded-2xl shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
-                <FaCheckCircle className="text-indigo-600" />
+          <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-4 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
+                <FaCheckCircle className="text-indigo-600 text-xs sm:text-sm" />
               </div>
-              <span className="text-gray-500 text-sm font-medium">Confirmed</span>
+              <span className="text-gray-500 text-xs font-medium truncate">Confirmed</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{confirmedBookings}</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">{confirmedBookings}</p>
           </div>
-          <div className="bg-white shadow-lg border border-gray-200 rounded-2xl shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                <FaHourglassHalf className="text-amber-400" />
+          <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-4 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                <FaHourglassHalf className="text-amber-500 text-xs sm:text-sm" />
               </div>
-              <span className="text-gray-500 text-sm font-medium">Pending</span>
+              <span className="text-gray-500 text-xs font-medium truncate">Pending</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{pendingBookings}</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">{pendingBookings}</p>
           </div>
-          <div className="bg-white shadow-lg border border-gray-200 rounded-2xl shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                <FaMoneyBillWave className="text-purple-600" />
+          <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-4 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                <FaMoneyBillWave className="text-purple-600 text-xs sm:text-sm" />
               </div>
-              <span className="text-gray-500 text-sm font-medium">Total Spent</span>
+              <span className="text-gray-500 text-xs font-medium truncate">Total Spent</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
               LKR {totalSpent.toLocaleString()}
             </p>
           </div>
         </div>
 
         {/* TABS */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex overflow-x-auto no-scrollbar gap-2 mb-6 pb-1">
           <button
             onClick={() => setActiveTab("bookings")}
-            className={`px-6 py-3 rounded-xl font-semibold transition ${
+            className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap cursor-pointer ${
               activeTab === "bookings"
-                ? "bg-indigo-600 text-white shadow-md"
-                : "bg-white shadow-lg text-gray-500 hover:bg-gray-800 border border-gray-200"
+                ? "bg-indigo-600 text-white shadow-sm"
+                : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
-            <FaClipboardList className="inline mr-2" />
+            <FaClipboardList className="inline mr-1.5 text-xs" />
             My Bookings
           </button>
           <button
             onClick={() => setActiveTab("payments")}
-            className={`px-6 py-3 rounded-xl font-semibold transition ${
+            className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap cursor-pointer ${
               activeTab === "payments"
-                ? "bg-indigo-600 text-white shadow-md"
-                : "bg-white shadow-lg text-gray-500 hover:bg-gray-800 border border-gray-200"
+                ? "bg-indigo-600 text-white shadow-sm"
+                : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
-            <FaMoneyBillWave className="inline mr-2" />
+            <FaMoneyBillWave className="inline mr-1.5 text-xs" />
             Payment History
           </button>
           <button
             onClick={() => setActiveTab("reviews")}
-            className={`px-6 py-3 rounded-xl font-semibold transition ${
+            className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap cursor-pointer ${
               activeTab === "reviews"
-                ? "bg-indigo-600 text-white shadow-md"
-                : "bg-white shadow-lg text-gray-500 hover:bg-gray-800 border border-gray-200"
+                ? "bg-indigo-600 text-white shadow-sm"
+                : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
-            <FaStar className="inline mr-2" />
+            <FaStar className="inline mr-1.5 text-xs" />
             My Reviews
           </button>
         </div>
@@ -697,7 +672,7 @@ const UserDashboard = () => {
                             onChange={(e) => setReviewText(e.target.value)}
                             placeholder="Share your experience with this car..."
                             rows={3}
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white shadow-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none text-sm"
                           />
                           <div className="flex gap-3 mt-3">
                             <button
@@ -755,60 +730,62 @@ const UserDashboard = () => {
                 </p>
               </div>
             ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-100 border-b border-gray-300">
-                    <th className="text-left py-4 px-6 text-gray-500 font-semibold">
-                      Order ID
-                    </th>
-                    <th className="text-left py-4 px-6 text-gray-500 font-semibold">
-                      Car
-                    </th>
-                    <th className="text-left py-4 px-6 text-gray-500 font-semibold">
-                      Date
-                    </th>
-                    <th className="text-left py-4 px-6 text-gray-500 font-semibold">
-                      Amount
-                    </th>
-                    <th className="text-left py-4 px-6 text-gray-500 font-semibold">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payments.map((payment) => (
-                    <tr
-                      key={payment.id}
-                      className="border-b border-gray-200 hover:bg-gray-50 transition"
-                    >
-                      <td className="py-4 px-6 text-white font-mono text-sm">
-                        {payment.orderId || "N/A"}
-                      </td>
-                      <td className="py-4 px-6 text-white font-medium">
-                        {payment.carName || "N/A"}
-                      </td>
-                      <td className="py-4 px-6 text-gray-500">
-                        {payment.createdAt?.toDate?.()
-                          ? payment.createdAt.toDate().toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })
-                          : "N/A"}
-                      </td>
-                      <td className="py-4 px-6 font-semibold text-gray-900">
-                        LKR {(parseFloat(payment.totalAmount) || 0).toLocaleString()}
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-semibold">
-                          <FaCheckCircle className="text-xs" />{" "}
-                          {payment.paymentStatus || "Paid"}
-                        </span>
-                      </td>
+              <div className="overflow-x-auto w-full">
+                <table className="w-full min-w-[640px] text-sm">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="text-left py-3.5 px-5 text-gray-500 font-semibold text-xs uppercase tracking-wider">
+                        Order ID
+                      </th>
+                      <th className="text-left py-3.5 px-5 text-gray-500 font-semibold text-xs uppercase tracking-wider">
+                        Car
+                      </th>
+                      <th className="text-left py-3.5 px-5 text-gray-500 font-semibold text-xs uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="text-left py-3.5 px-5 text-gray-500 font-semibold text-xs uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="text-left py-3.5 px-5 text-gray-500 font-semibold text-xs uppercase tracking-wider">
+                        Status
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {payments.map((payment) => (
+                      <tr
+                        key={payment.id}
+                        className="hover:bg-gray-50/80 transition"
+                      >
+                        <td className="py-3.5 px-5 text-gray-800 font-mono text-xs">
+                          {payment.orderId || "N/A"}
+                        </td>
+                        <td className="py-3.5 px-5 text-gray-900 font-medium">
+                          {payment.carName || "N/A"}
+                        </td>
+                        <td className="py-3.5 px-5 text-gray-500 text-xs">
+                          {payment.createdAt?.toDate?.()
+                            ? payment.createdAt.toDate().toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "N/A"}
+                        </td>
+                        <td className="py-3.5 px-5 font-semibold text-gray-900">
+                          LKR {(parseFloat(payment.totalAmount) || 0).toLocaleString()}
+                        </td>
+                        <td className="py-3.5 px-5">
+                          <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                            <FaCheckCircle className="text-[10px]" />{" "}
+                            {payment.paymentStatus || "Paid"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
@@ -885,39 +862,7 @@ const UserDashboard = () => {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-14 px-10 mt-auto">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
-          <div>
-            <h2 className="text-3xl font-bold flex items-center gap-3 mb-5">
-              <FaCar className="text-indigo-600" /> CarRental
-            </h2>
-            <p className="text-gray-500 leading-8">
-              Your trusted partner for car rentals. Quality vehicles at
-              affordable prices.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-3xl font-bold mb-5 text-white">Contact Us</h2>
-            <div className="space-y-3 text-gray-500">
-              <p>Email: info@carrental.com</p>
-              <p>Phone: +94 77 123 4567</p>
-              <p>Address: Colombo, Sri Lanka</p>
-            </div>
-          </div>
-          <div>
-            <h2 className="text-3xl font-bold mb-5 text-white">Follow Us</h2>
-            <div className="flex gap-5 text-gray-500">
-              <span className="hover:text-indigo-600 cursor-pointer transition">Facebook</span>
-              <span className="hover:text-indigo-600 cursor-pointer transition">Twitter</span>
-              <span className="hover:text-indigo-600 cursor-pointer transition">Instagram</span>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-200 my-8"></div>
-        <div className="text-center text-gray-400">
-          © 2026 CarRental. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

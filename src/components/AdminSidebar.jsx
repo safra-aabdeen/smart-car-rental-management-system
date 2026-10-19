@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 import { signOut } from "firebase/auth";
@@ -12,12 +12,15 @@ import {
   FaEnvelope,
   FaStar,
   FaUserTie,
-  FaMoneyCheckAlt
+  FaMoneyCheckAlt,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -38,61 +41,124 @@ const AdminSidebar = () => {
     { name: "Reviews", icon: <FaStar />, path: "/admin/reviews" },
   ];
 
-  return (
-    <div className="w-72 bg-gray-900 border-r border-gray-700 text-white p-6 flex flex-col h-screen sticky top-0 shrink-0 overflow-y-auto overflow-x-hidden">
+  const isActive = (itemPath) => {
+    if (location.pathname === itemPath) return true;
+    if (location.pathname === "/admin/bookings" && itemPath === "/admin/booking") return true;
+    if (location.pathname === "/admin/users" && itemPath === "/admin/user") return true;
+    return false;
+  };
+
+  const NavContent = () => (
+    <div className="flex flex-col h-full">
       <div className="flex-1">
         {/* LOGO */}
-        <div className="flex items-center gap-3 mb-8">
-          <FaCar className="text-3xl text-indigo-400 shrink-0" />
-          <h1 className="text-2xl font-bold whitespace-nowrap">Admin Panel</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <FaCar className="text-2xl text-indigo-400 shrink-0" />
+            <h1 className="text-xl font-bold tracking-tight whitespace-nowrap">Admin Panel</h1>
+          </div>
+          {/* Close button for mobile drawer */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="lg:hidden p-2 text-gray-400 hover:text-white rounded-lg"
+            aria-label="Close menu"
+          >
+            <FaTimes className="text-xl" />
+          </button>
         </div>
 
         {/* MENU */}
-        <div className="space-y-2">
-          {menuItems.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => navigate(item.path)}
-              className={`
-                flex items-center gap-3 w-full p-3.5 rounded-xl transition font-medium
-                ${
-                  location.pathname === item.path || 
-                  (location.pathname === "/admin/bookings" && item.path === "/admin/booking") ||
-                  (location.pathname === "/admin/users" && item.path === "/admin/user")
-                    ? "bg-indigo-500/20 text-indigo-400 border-l-2 border-indigo-400"
-                    : "hover:bg-gray-800 text-gray-400 hover:text-white"
-                }
-              `}
-            >
-              <span className="text-lg">{item.icon}</span>
-              {item.name}
-            </button>
-          ))}
-        </div>
+        <nav className="space-y-1.5" aria-label="Admin Navigation">
+          {menuItems.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <button
+                key={item.name}
+                onClick={() => {
+                  navigate(item.path);
+                  setIsOpen(false);
+                }}
+                className={`
+                  flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl transition text-sm font-medium text-left cursor-pointer
+                  ${
+                    active
+                      ? "bg-indigo-600/20 text-indigo-400 border-l-3 border-indigo-500 font-semibold shadow-sm"
+                      : "text-gray-400 hover:bg-gray-800 hover:text-gray-100"
+                  }
+                `}
+              >
+                <span className={`text-base shrink-0 ${active ? "text-indigo-400" : "text-gray-400"}`}>
+                  {item.icon}
+                </span>
+                <span className="truncate">{item.name}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* ================= ADMIN PROFILE ================= */}
-      <div className="border-t border-gray-700 pt-5 mt-10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
-               <span className="text-xl font-bold">A</span>
+      <div className="border-t border-gray-800 pt-4 mt-6">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center shrink-0 font-bold text-sm">
+              A
             </div>
-            <div>
-              <p className="font-bold text-lg">Admin</p>
-              <p className="text-gray-400 text-sm">Administrator</p>
+            <div className="min-w-0">
+              <p className="font-semibold text-sm truncate">Admin</p>
+              <p className="text-gray-400 text-xs truncate">Administrator</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center bg-gray-700 hover:bg-red-600 border border-gray-600 p-3 rounded-xl transition"
+            className="p-2.5 bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white border border-gray-700 hover:border-red-500 rounded-xl transition shrink-0 cursor-pointer"
             title="Logout"
+            aria-label="Logout"
           >
-            <FaSignOutAlt />
+            <FaSignOutAlt className="text-sm" />
           </button>
         </div>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* MOBILE TOP BAR (visible below lg) */}
+      <header className="lg:hidden w-full bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-40 shrink-0 text-white">
+        <div className="flex items-center gap-2.5">
+          <FaCar className="text-xl text-indigo-400" />
+          <span className="font-bold text-base tracking-tight">Admin Panel</span>
+        </div>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 text-gray-300 hover:text-white bg-gray-800 rounded-lg focus:outline-none transition"
+          aria-label="Toggle navigation menu"
+        >
+          {isOpen ? <FaTimes className="text-lg" /> : <FaBars className="text-lg" />}
+        </button>
+      </header>
+
+      {/* MOBILE BACKDROP & DRAWER */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 lg:hidden transition-opacity"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="w-72 max-w-[80vw] bg-gray-900 text-white p-5 h-full overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <NavContent />
+          </div>
+        </div>
+      )}
+
+      {/* DESKTOP SIDEBAR (visible lg and up) */}
+      <aside className="hidden lg:flex flex-col w-64 bg-gray-900 border-r border-gray-800 text-white p-5 h-screen sticky top-0 shrink-0 overflow-y-auto overflow-x-hidden">
+        <NavContent />
+      </aside>
+    </>
   );
 };
 

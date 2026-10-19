@@ -238,405 +238,249 @@ const AdminMessages = () => {
   const pendingMessages = totalMessages - repliedMessages;
 
   return (
-
-    <div className="flex min-h-screen bg-gray-50">
-
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 overflow-x-hidden">
       {/* ================= SIDEBAR ================= */}
-
       <AdminSidebar />
 
-      <main className="flex-1 p-8">
-
-        <h1 className="text-5xl font-bold text-gray-900 mb-8">
-          Contact Messages
-        </h1>
+      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+            Contact Messages
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            Read and reply to customer inquiries and contact submissions
+          </p>
+        </div>
 
         {/* ================= STATS CARDS ================= */}
-
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-
-          {/* TOTAL MESSAGES */}
-
-          <div className="bg-white shadow-lg border border-gray-200 p-6 rounded-2xl shadow-md">
-
-            <div className="flex justify-between items-center">
-
-              <div>
-
-                <p className="text-gray-500">
-                  Total Messages
-                </p>
-
-                <h2 className="text-4xl font-bold text-gray-900 mt-2">
-                  {totalMessages}
-                </h2>
-
-              </div>
-
-              <div className="bg-indigo-50 p-5 rounded-2xl">
-                <FaInbox className="text-3xl text-indigo-600" />
-              </div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white shadow-xs border border-gray-200 p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Total Messages</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalMessages}</h3>
             </div>
-
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <FaInbox className="text-lg" />
+            </div>
           </div>
 
-          {/* REPLIED */}
-
-          <div className="bg-white shadow-lg border border-gray-200 p-6 rounded-2xl shadow-md">
-
-            <div className="flex justify-between items-center">
-
-              <div>
-
-                <p className="text-gray-500">
-                  Replied
-                </p>
-
-                <h2 className="text-4xl font-bold text-gray-900 mt-2">
-                  {repliedMessages}
-                </h2>
-
-              </div>
-
-              <div className="bg-indigo-50 p-5 rounded-2xl">
-                <FaCheckCircle className="text-3xl text-indigo-600" />
-              </div>
-
+          <div className="bg-white shadow-xs border border-gray-200 p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Replied</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{repliedMessages}</h3>
             </div>
-
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <FaCheckCircle className="text-lg" />
+            </div>
           </div>
 
-          {/* PENDING */}
-
-          <div className="bg-white shadow-lg border border-gray-200 p-6 rounded-2xl shadow-md">
-
-            <div className="flex justify-between items-center">
-
-              <div>
-
-                <p className="text-gray-500">
-                  Pending
-                </p>
-
-                <h2 className="text-4xl font-bold text-gray-900 mt-2">
-                  {pendingMessages}
-                </h2>
-
-              </div>
-
-              <div className="bg-yellow-500/20 p-5 rounded-2xl">
-                <FaClock className="text-3xl text-yellow-400" />
-              </div>
-
+          <div className="bg-white shadow-xs border border-gray-200 p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Pending</p>
+              <h3 className="text-2xl font-bold text-gray-900 mt-1">{pendingMessages}</h3>
             </div>
-
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+              <FaClock className="text-lg" />
+            </div>
           </div>
-
         </div>
 
         {/* ================= SEARCH & FILTER ================= */}
-
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-
-          {/* SEARCH */}
-
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
-
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-
+            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
             <input
               type="text"
               placeholder="Search by name, email, or message..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white shadow-lg border border-gray-200 pl-12 pr-4 py-3 rounded-xl outline-none focus:border-indigo-500 text-white placeholder-gray-400"
+              className="w-full bg-white border border-gray-300 pl-10 pr-4 py-2.5 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
             />
-
           </div>
-
-          {/* FILTER */}
 
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-white shadow-lg border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-gray-600"
+            className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
           >
             <option value="all">All Messages</option>
             <option value="pending">Pending</option>
             <option value="replied">Replied</option>
           </select>
-
         </div>
 
         {/* ================= MESSAGES TABLE ================= */}
-
-        <div className="bg-white shadow-lg border border-gray-200 rounded-2xl shadow overflow-hidden">
-
+        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden">
           {loading ? (
-
-            <div className="p-10 text-center text-gray-400 text-xl">
+            <div className="p-10 text-center text-gray-400 text-sm">
               Loading messages...
             </div>
-
           ) : filteredMessages.length === 0 ? (
-
-            <div className="p-10 text-center text-gray-400 text-xl">
-
-              <FaEnvelopeOpen className="text-6xl text-gray-300 mx-auto mb-4" />
-
-              <p>No messages found</p>
-
+            <div className="p-12 text-center text-gray-400">
+              <FaEnvelopeOpen className="text-4xl text-gray-300 mx-auto mb-3" />
+              <p className="text-sm font-medium">No messages found</p>
             </div>
-
           ) : (
-
-            <table className="w-full">
-
-              <thead className="bg-gray-100 border-b border-gray-300">
-
-                <tr>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    #
-                  </th>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    Name
-                  </th>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    Email
-                  </th>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    Message
-                  </th>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    Date
-                  </th>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    Status
-                  </th>
-
-                  <th className="p-4 text-left text-gray-500 font-semibold">
-                    Actions
-                  </th>
-
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                {filteredMessages.map((msg, index) => (
-
-                  <tr
-                    key={msg.id}
-                    className="border-t border-gray-200 hover:bg-gray-50 transition"
-                  >
-
-                    <td className="p-4 text-gray-400">
-                      {String(index + 1).padStart(3, "0")}
-                    </td>
-
-                    <td className="p-4">
-
-                      <div className="flex items-center gap-3">
-
-                        <div className="bg-indigo-50 p-3 rounded-full">
-                          <FaUserCircle className="text-indigo-600 text-xl" />
-                        </div>
-
-                        <span className="font-semibold text-gray-900">
-                          {msg.name}
-                        </span>
-
-                      </div>
-
-                    </td>
-
-                    <td className="p-4 text-gray-600">
-                      {msg.email}
-                    </td>
-
-                    <td className="p-4 text-gray-600 max-w-xs">
-
-                      <p className="truncate" title={msg.message}>
-                        {msg.message}
-                      </p>
-
-                    </td>
-
-                    <td className="p-4 text-gray-400 text-sm whitespace-nowrap">
-                      {formatDate(msg.createdAt)}
-                    </td>
-
-                    <td className="p-4">
-
-                      {msg.status === "replied" ? (
-
-                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                          Replied
-                        </span>
-
-                      ) : (
-
-                        <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">
-                          Pending
-                        </span>
-
-                      )}
-
-                    </td>
-
-                    <td className="p-4">
-
-                      <div className="flex items-center gap-3">
-
-                        <button
-                          onClick={() => handleOpenReply(msg)}
-                          className="text-indigo-600 hover:text-indigo-500 transition"
-                          title="Reply"
-                        >
-                          <FaReply className="text-lg" />
-                        </button>
-
-                        <button
-                          onClick={() => handleDelete(msg.id)}
-                          className="text-red-600 hover:text-red-300 transition"
-                          title="Delete"
-                        >
-                          <FaTrash className="text-lg" />
-                        </button>
-
-                      </div>
-
-                    </td>
-
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-left border-collapse min-w-[750px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3.5">#</th>
+                    <th className="px-4 py-3.5">Name</th>
+                    <th className="px-4 py-3.5">Email</th>
+                    <th className="px-4 py-3.5">Message</th>
+                    <th className="px-4 py-3.5">Date</th>
+                    <th className="px-4 py-3.5">Status</th>
+                    <th className="px-4 py-3.5 text-center">Actions</th>
                   </tr>
+                </thead>
 
-                ))}
+                <tbody className="divide-y divide-gray-200 text-sm">
+                  {filteredMessages.map((msg, index) => (
+                    <tr
+                      key={msg.id}
+                      className="hover:bg-gray-50/80 transition"
+                    >
+                      <td className="px-4 py-3.5 text-xs text-gray-400 font-mono">
+                        {String(index + 1).padStart(3, "0")}
+                      </td>
 
-              </tbody>
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0 font-semibold text-xs">
+                            {msg.name ? msg.name.charAt(0).toUpperCase() : "M"}
+                          </div>
+                          <span className="font-semibold text-gray-900 text-sm">
+                            {msg.name}
+                          </span>
+                        </div>
+                      </td>
 
-            </table>
+                      <td className="px-4 py-3.5 text-gray-600 whitespace-nowrap text-sm">
+                        {msg.email}
+                      </td>
 
+                      <td className="px-4 py-3.5 text-gray-600 max-w-xs">
+                        <p className="truncate text-sm" title={msg.message}>
+                          {msg.message}
+                        </p>
+                      </td>
+
+                      <td className="px-4 py-3.5 text-gray-400 text-xs whitespace-nowrap">
+                        {formatDate(msg.createdAt)}
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        {msg.status === "replied" ? (
+                          <span className="bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                            Replied
+                          </span>
+                        ) : (
+                          <span className="bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                            Pending
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3.5 whitespace-nowrap text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleOpenReply(msg)}
+                            className="p-1.5 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition"
+                            title="Reply"
+                          >
+                            <FaReply className="text-sm" />
+                          </button>
+
+                          <button
+                            onClick={() => handleDelete(msg.id)}
+                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition"
+                            title="Delete"
+                          >
+                            <FaTrash className="text-sm" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-
         </div>
-
       </main>
 
       {/* ================= REPLY MODAL ================= */}
-
       {showReplyModal && selectedMessage && (
-
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
-
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
-
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             {/* MODAL HEADER */}
-
-            <div className="bg-indigo-600 border-b border-gray-200 text-white p-6 flex justify-between items-center">
-
-              <div className="flex items-center gap-3">
-                <FaReply className="text-xl" />
-                <h2 className="text-2xl font-bold">Reply to Message</h2>
+            <div className="bg-indigo-600 text-white p-5 flex justify-between items-center rounded-t-2xl">
+              <div className="flex items-center gap-2.5">
+                <FaReply className="text-lg" />
+                <h2 className="text-lg font-bold">Reply to Message</h2>
               </div>
-
               <button
                 onClick={() => setShowReplyModal(false)}
-                className="text-gray-400 hover:text-white transition text-xl"
+                className="text-indigo-200 hover:text-white transition p-1"
               >
                 <FaTimes />
               </button>
-
             </div>
 
             {/* MODAL BODY */}
-
-            <div className="p-6">
-
+            <div className="p-5 sm:p-6">
               {/* ORIGINAL MESSAGE INFO */}
-
-              <div className="bg-white shadow-lg border border-gray-200 rounded-xl p-4 mb-6">
-
-                <div className="flex items-center gap-3 mb-3">
-
-                  <div className="bg-indigo-50 p-2 rounded-full">
-                    <FaUserCircle className="text-indigo-600 text-lg" />
-                  </div>
-
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
+                <div className="flex items-center justify-between gap-2 mb-2">
                   <div>
-
-                    <p className="font-bold text-lg text-white">
+                    <p className="font-semibold text-sm text-gray-900">
                       {selectedMessage.name}
                     </p>
-
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-500 text-xs">
                       {selectedMessage.email}
                     </p>
-
                   </div>
-
-                  <span className="ml-auto text-gray-400 text-sm">
+                  <span className="text-gray-400 text-xs shrink-0">
                     {formatDate(selectedMessage.createdAt)}
                   </span>
-
                 </div>
 
-                <p className="text-gray-600 bg-gray-100 border border-gray-300 rounded-lg p-3">
+                <p className="text-gray-700 text-sm bg-white border border-gray-200 rounded-lg p-3 mt-2">
                   {selectedMessage.message}
                 </p>
 
-                {/* SHOW PREVIOUS REPLY IF EXISTS */}
-
                 {selectedMessage.adminReply && (
-
-                  <div className="mt-3 bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/20">
-
-                    <p className="text-sm text-indigo-600 font-semibold mb-1">
+                  <div className="mt-3 bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+                    <p className="text-xs text-emerald-800 font-semibold mb-1">
                       Previous Reply:
                     </p>
-
-                    <p className="text-gray-600">
+                    <p className="text-xs text-gray-700">
                       {selectedMessage.adminReply}
                     </p>
-
                   </div>
-
                 )}
-
               </div>
 
               {/* REPLY TEXTAREA */}
-
-              <div className="mb-6">
-
-                <label className="font-semibold block mb-2 text-white">
+              <div className="mb-4">
+                <label className="text-xs font-semibold text-gray-700 block mb-1.5">
                   Your Reply
                 </label>
-
                 <textarea
-                  rows="5"
+                  rows="4"
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Type your reply here..."
-                  className="w-full bg-white border border-gray-300 p-4 rounded-xl outline-none resize-none focus:border-indigo-500 text-white placeholder-gray-400"
+                  placeholder="Type your reply to the customer..."
+                  className="w-full bg-white border border-gray-300 p-3 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
                 ></textarea>
-
               </div>
 
               {/* MODAL ACTIONS */}
-
-              <div className="flex justify-end gap-4">
-
+              <div className="flex justify-end gap-3 pt-2">
                 <button
                   onClick={() => setShowReplyModal(false)}
-                  className="px-6 py-3 border border-gray-300 rounded-xl hover:bg-slate-700 text-gray-600 transition font-semibold"
+                  className="px-4 py-2 text-sm font-semibold border border-gray-300 rounded-xl hover:bg-gray-100 text-gray-700 transition"
                 >
                   Cancel
                 </button>
@@ -644,24 +488,17 @@ const AdminMessages = () => {
                 <button
                   onClick={handleSendReply}
                   disabled={sendingReply}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-semibold transition disabled:opacity-50"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 text-sm rounded-xl flex items-center gap-2 font-semibold shadow-xs transition disabled:opacity-50"
                 >
-                  <FaPaperPlane />
+                  <FaPaperPlane className="text-xs" />
                   {sendingReply ? "Sending..." : "Send Reply"}
                 </button>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       )}
-
     </div>
-
   );
 };
 

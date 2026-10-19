@@ -86,18 +86,24 @@ const Register = () => {
 
       <form
         onSubmit={handleRegister}
-        className="relative z-10 bg-white/90 backdrop-blur-xl p-10 rounded-2xl shadow-2xl shadow-gray-300/40 border border-gray-200/60 w-[400px]"
+        className="relative z-10 bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-200/80 w-full max-w-[420px] mx-4 my-8"
       >
-        <h1 className="text-4xl font-bold text-center text-indigo-600 mb-6">
-          Register
-        </h1>
+        <div className="text-center mb-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl tracking-tight">
+            CarRental
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+            Create Account
+          </h1>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">Join CarRental today</p>
+        </div>
 
         <input
           type="text"
-          placeholder="User Name"
+          placeholder="Full Name"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-4 text-gray-900 placeholder-gray-400"
+          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
 
@@ -106,7 +112,7 @@ const Register = () => {
           placeholder="Email Address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-4 text-gray-900 placeholder-gray-400"
+          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
 
@@ -115,28 +121,29 @@ const Register = () => {
           placeholder="Phone Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-4 text-gray-900 placeholder-gray-400"
+          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
         <textarea
           placeholder="Address"
+          rows={2}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-4 text-gray-900 placeholder-gray-400"
+          className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl mb-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
         />
 
-        <div className="relative mb-5">
+        <div className="relative mb-4">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl pr-12 text-gray-900 placeholder-gray-400"
+            className="w-full bg-gray-50 border border-gray-300 p-3 rounded-xl pr-12 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           />
 
           <div
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <FaEye /> : <FaEyeSlash />}
@@ -146,14 +153,14 @@ const Register = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/25 font-semibold disabled:opacity-50"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold text-sm sm:text-base disabled:opacity-50 transition cursor-pointer"
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? "Creating Account..." : "Register"}
         </button>
 
-        <p className="mt-4 text-center text-gray-500">
+        <p className="mt-4 text-center text-xs sm:text-sm text-gray-500">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 font-bold hover:text-indigo-500">
+          <Link to="/login" className="text-indigo-600 font-bold hover:underline">
             Login
           </Link>
         </p>
