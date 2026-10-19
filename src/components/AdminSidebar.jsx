@@ -155,7 +155,7 @@ const AdminSidebar = () => {
       )}
 
       {/* DESKTOP SIDEBAR (visible lg and up) */}
-      <aside className="hidden lg:flex flex-col w-64 bg-gray-900 border-r border-gray-800 text-white p-5 h-screen sticky top-0 shrink-0 overflow-y-auto overflow-x-hidden">
+      <aside className="hidden lg:flex flex-col w-64 bg-gray-900 border-r border-gray-800 text-white p-5 h-screen sticky top-0 shrink-0 overflow-y-auto overflow-x-hidden z-30">
         <NavContent />
       </aside>
     </>

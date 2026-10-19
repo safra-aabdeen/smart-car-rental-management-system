@@ -60,7 +60,7 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
 
       {/* NAVBAR */}
       <Navbar active="home" />

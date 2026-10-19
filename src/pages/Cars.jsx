@@ -73,7 +73,7 @@ const Cars = () => {
   });
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
 
       {/* ================= NAVBAR ================= */}
       <Navbar active="cars" />
@@ -133,7 +133,7 @@ const Cars = () => {
         {/* MOBILE FILTER TOGGLE BUTTON */}
         <button
           onClick={() => setShowMobileFilters(!showMobileFilters)}
-          className="lg:hidden w-full bg-white border border-gray-200 shadow-sm px-4 py-3 rounded-xl flex items-center justify-between font-semibold text-gray-800 text-sm mb-6 cursor-pointer"
+          className="lg:hidden w-full bg-white/95 backdrop-blur-xs border border-gray-200 shadow-sm px-4 py-3 rounded-xl flex items-center justify-between font-semibold text-gray-800 text-sm mb-6 cursor-pointer sticky top-[68px] z-30"
         >
           <span className="flex items-center gap-2">
             <FaFilter className="text-indigo-600" />
@@ -145,9 +145,9 @@ const Cars = () => {
           {showMobileFilters ? <FaChevronUp className="text-gray-400" /> : <FaChevronDown className="text-gray-400" />}
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* FILTER - STICKY */}
-          <div className={`bg-white shadow-sm border border-gray-200 rounded-2xl p-5 lg:sticky lg:top-24 h-fit ${
+          <div className={`bg-white shadow-sm border border-gray-200 rounded-2xl p-5 lg:sticky lg:top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto z-20 ${
             showMobileFilters ? "block mb-4 lg:mb-0" : "hidden lg:block"
           }`}>
             <div className="flex items-center justify-between mb-5 text-gray-900">

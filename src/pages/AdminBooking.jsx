@@ -259,11 +259,11 @@ const AdminBookings = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="flex flex-col lg:flex-row min-h-screen lg:h-screen lg:overflow-hidden bg-gray-50">
       {/* Sidebar */}
       <AdminSidebar />
 
-      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <main className="flex-1 min-w-0 lg:h-full lg:overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Manage Bookings</h1>

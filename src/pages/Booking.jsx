@@ -219,7 +219,7 @@ const Booking = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
 
       {/* NAVBAR */}
       <Navbar />
@@ -228,7 +228,7 @@ const Booking = () => {
       <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 md:px-10 py-6 sm:py-10 flex-1">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900 tracking-tight">Book Your Car</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
 
           {/* FORM */}
           <div className="lg:col-span-2 bg-white shadow-sm border border-gray-200 p-5 sm:p-8 rounded-2xl">
@@ -306,7 +306,7 @@ const Booking = () => {
           </div>
 
           {/* SUMMARY */}
-          <div className="bg-white shadow-sm border border-gray-200 p-5 rounded-2xl h-fit lg:sticky lg:top-24">
+          <div className="bg-white shadow-sm border border-gray-200 p-5 rounded-2xl h-fit self-start lg:sticky lg:top-24">
             <h2 className="text-lg font-bold mb-3 text-gray-900">Booking Summary</h2>
 
             <div className="h-40 w-full overflow-hidden rounded-xl bg-gray-100 mb-4">
